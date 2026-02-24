@@ -1,5 +1,6 @@
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import prisma from "@/lib/prismadb";
+import { getWritesBlockedResponse } from "@/lib/writeGuard";
 import { NextResponse } from "next/server";
 
 interface IParams {
@@ -10,6 +11,9 @@ export async function DELETE(
   request: Request,
   { params }: { params: IParams }
 ) {
+  const writesBlocked = getWritesBlockedResponse();
+  if (writesBlocked) return writesBlocked;
+
   const currentUser = await getCurrentUser();
 
   if (!currentUser) {

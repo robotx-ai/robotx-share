@@ -263,6 +263,30 @@ Start the server
   npm run dev
 ```
 
+### :card_file_box: Mongo to Supabase Migration
+
+This repository now includes one-time migration utilities for moving MongoDB data to Supabase Postgres.
+
+Set migration env vars in `.env`:
+
+- `DATABASE_URL` (target Supabase Postgres)
+- `MONGODB_MIGRATION_URI` (source MongoDB)
+- `MONGODB_MIGRATION_DB` (source DB name)
+- `DB_MIGRATION_READ_ONLY` (`"true"` to block mutating API routes during cutover)
+
+Commands:
+
+```bash
+npm run db:migrate:sql
+npm run db:migrate:data
+npm run db:migrate:verify
+```
+
+Operational docs:
+
+- `docs/supabase-cutover-runbook.md`
+- `docs/migration-verification-template.md`
+
 <hr />
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).

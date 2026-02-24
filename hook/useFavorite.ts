@@ -15,7 +15,7 @@ function useFavorite({ listingId, currentUser }: Props) {
   const loginModel = useLoginModel();
 
   const hasFavorite = useMemo(() => {
-    const list = currentUser?.favoriteIds || [];
+    const list = currentUser?.favoriteListingIds || [];
 
     return list.includes(listingId);
   }, [currentUser, listingId]);

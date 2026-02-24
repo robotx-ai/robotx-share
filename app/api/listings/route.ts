@@ -1,8 +1,12 @@
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import prisma from "@/lib/prismadb";
+import { getWritesBlockedResponse } from "@/lib/writeGuard";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
+  const writesBlocked = getWritesBlockedResponse();
+  if (writesBlocked) return writesBlocked;
+
   const currentUser = await getCurrentUser();
 
   if (!currentUser) {

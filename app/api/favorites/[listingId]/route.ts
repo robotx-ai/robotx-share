@@ -1,5 +1,6 @@
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import prisma from "@/lib/prismadb";
+import { getWritesBlockedResponse } from "@/lib/writeGuard";
 import { NextResponse } from "next/server";
 
 interface IPrisma {
@@ -7,6 +8,9 @@ interface IPrisma {
 }
 
 export async function POST(request: Request, { params }: { params: IPrisma }) {
+  const writesBlocked = getWritesBlockedResponse();
+  if (writesBlocked) return writesBlocked;
+
   const currentUser = await getCurrentUser();
 
   if (!currentUser) {
@@ -19,26 +23,30 @@ export async function POST(request: Request, { params }: { params: IPrisma }) {
     throw new Error("Invalid Id");
   }
 
-  let favoriteIds = [...(currentUser.favoriteIds || [])];
-
-  favoriteIds.push(listingId);
-
-  const user = await prisma.user.update({
+  const favorite = await prisma.userFavorite.upsert({
     where: {
-      id: currentUser.id,
+      userId_listingId: {
+        userId: currentUser.id,
+        listingId,
+      },
     },
-    data: {
-      favoriteIds,
+    create: {
+      userId: currentUser.id,
+      listingId,
     },
+    update: {},
   });
 
-  return NextResponse.json(user);
+  return NextResponse.json(favorite);
 }
 
 export async function DELETE(
   request: Request,
   { params }: { params: IPrisma }
 ) {
+  const writesBlocked = getWritesBlockedResponse();
+  if (writesBlocked) return writesBlocked;
+
   const currentUser = await getCurrentUser();
 
   if (!currentUser) {
@@ -51,18 +59,12 @@ export async function DELETE(
     throw new Error("Invalid Id");
   }
 
-  let favoriteIds = [...(currentUser.favoriteIds || [])];
-
-  favoriteIds = favoriteIds.filter((id) => id !== listingId);
-
-  const user = await prisma.user.update({
+  const favorite = await prisma.userFavorite.deleteMany({
     where: {
-      id: currentUser.id,
-    },
-    data: {
-      favoriteIds,
+      userId: currentUser.id,
+      listingId,
     },
   });
 
-  return NextResponse.json(user);
+  return NextResponse.json(favorite);
 }

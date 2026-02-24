@@ -11,8 +11,10 @@ export default async function getFavoriteListings() {
 
     const favorites = await prisma.listing.findMany({
       where: {
-        id: {
-          in: [...(currentUser.favoriteIds || [])],
+        favoritedBy: {
+          some: {
+            userId: currentUser.id,
+          },
         },
       },
     });

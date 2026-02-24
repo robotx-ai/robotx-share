@@ -18,17 +18,27 @@ export default async function getCurrentUser() {
       where: {
         email: session.user.email as string,
       },
+      include: {
+        favoriteListings: {
+          select: {
+            listingId: true,
+          },
+        },
+      },
     });
 
     if (!currentUser) {
       return null;
     }
 
+    const { favoriteListings, ...safeCurrentUser } = currentUser;
+
     return {
-      ...currentUser,
-      createdAt: currentUser.createdAt.toISOString(),
-      updatedAt: currentUser.updatedAt.toISOString(),
-      emailVerified: currentUser.emailVerified?.toISOString() || null,
+      ...safeCurrentUser,
+      createdAt: safeCurrentUser.createdAt.toISOString(),
+      updatedAt: safeCurrentUser.updatedAt.toISOString(),
+      emailVerified: safeCurrentUser.emailVerified?.toISOString() || null,
+      favoriteListingIds: favoriteListings.map((favorite) => favorite.listingId),
     };
   } catch (error: any) {
     console.log(

@@ -13,7 +13,15 @@ export default async function getListingById(params: IParams) {
         id: listingId,
       },
       include: {
-        user: true,
+        user: {
+          include: {
+            favoriteListings: {
+              select: {
+                listingId: true,
+              },
+            },
+          },
+        },
       },
     });
 
@@ -21,14 +29,17 @@ export default async function getListingById(params: IParams) {
       return null;
     }
 
+    const { favoriteListings, ...safeListingUser } = listing.user;
+
     return {
       ...listing,
       createdAt: listing.createdAt.toString(),
       user: {
-        ...listing.user,
-        createdAt: listing.user.createdAt.toString(),
-        updatedAt: listing.user.updatedAt.toString(),
-        emailVerified: listing.user.emailVerified?.toString() || null,
+        ...safeListingUser,
+        createdAt: safeListingUser.createdAt.toString(),
+        updatedAt: safeListingUser.updatedAt.toString(),
+        emailVerified: safeListingUser.emailVerified?.toString() || null,
+        favoriteListingIds: favoriteListings.map((favorite) => favorite.listingId),
       },
     };
   } catch (error: any) {
