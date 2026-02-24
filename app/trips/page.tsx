@@ -1,66 +1,42 @@
-import React, { Suspense } from "react";
-
+import ClientOnly from "@/components/ClientOnly";
 import EmptyState from "@/components/EmptyState";
-import Heading from "@/components/Heading";
-import ListingCard from "@/components/ListingCard";
-import LoadMore from "@/components/LoadMore";
+import React from "react";
+import getCurrentUser from "../actions/getCurrentUser";
+import getReservation from "../actions/getReservations";
+import TripsClient from "./TripsClient";
 
-import { getCurrentUser } from "@/services/user";
-import { getReservations } from "@/services/reservation";
-import { getFavorites } from "@/services/favorite";
+type Props = {};
 
-const TripsPage = async () => {
-  const user = await getCurrentUser();
-  const favorites = await getFavorites();
+const TripsPage = async (props: Props) => {
+  const currentUser = await getCurrentUser();
 
-  if (!user) {
-    return <EmptyState title="Unauthorized" subtitle="Please login" />;
+  if (!currentUser) {
+    return (
+      <ClientOnly>
+        <EmptyState title="Unauthorized" subtitle="Please login" />
+      </ClientOnly>
+    );
   }
 
-  const { listings, nextCursor } = await getReservations({ userId: user.id });
+  const reservations = await getReservation({
+    userId: currentUser.id,
+  });
 
-  if (listings.length === 0) {
+  if (reservations.length === 0) {
     return (
-      <EmptyState
-        title="No trips found"
-        subtitle="Looks like you haven't reserved any trips."
-      />
+      <ClientOnly>
+        <EmptyState
+          title="No trips found"
+          subtitle="Looks like you havent reserved any trips."
+        />
+      </ClientOnly>
     );
   }
 
   return (
-    <section className="main-container">
-      <Heading
-        title="Trips"
-        subtitle="Where you've been and where you're going."
-        backBtn
-      />
-      <div className=" mt-8 md:mt-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-8">
-        {listings.map((listing) => {
-          const { reservation, ...data } = listing;
-          const hasFavorited = favorites.includes(listing.id);
-          return (
-            <ListingCard
-              key={listing.id}
-              data={data}
-              reservation={reservation}
-              hasFavorited={hasFavorited}
-            />
-          );
-        })}
-        {nextCursor ? (
-          <Suspense fallback={<></>}>
-            <LoadMore
-              nextCursor={nextCursor}
-              fnArgs={{ userId: user.id }}
-              queryFn={getReservations}
-              queryKey={["trips", user.id]}
-              favorites={favorites}
-            />
-          </Suspense>
-        ) : null}
-      </div>
-    </section>
+    <ClientOnly>
+      <TripsClient reservations={reservations} currentUser={currentUser} />
+    </ClientOnly>
   );
 };
 

@@ -1,34 +1,46 @@
-import type { Metadata } from "next";
+import ClientOnly from "@/components/ClientOnly";
+import Footer from "@/components/Footer";
+import ToastContainerBar from "@/components/ToastContainerBar";
+import LoginModal from "@/components/models/LoginModal";
+import RegisterModal from "@/components/models/RegisterModal";
+import RentModal from "@/components/models/RentModal";
+import SearchModal from "@/components/models/SearchModal";
+import Navbar from "@/components/navbar/Navbar";
 import { Nunito } from "next/font/google";
-import { GoogleAnalytics } from "@next/third-parties/google";
+import "../styles/globals.css";
+import getCurrentUser from "./actions/getCurrentUser";
 
-import "./globals.css";
-import "react-loading-skeleton/dist/skeleton.css";
-import Navbar from "@/components/navbar";
-import Providers from "@/components/Provider";
-
-const nunito = Nunito({ subsets: ["latin"] });
-
-export const metadata: Metadata = {
-  title: "VacationHub",
-  description:
-    "Your Ultimate Destination Connection. Discover a world of endless possibilities and seamless vacation planning at VacationHub.",
+export const metadata = {
+  title: "Airbnb Clone",
+  description: "Airbnb Clone",
+  icons: "https://www.seekpng.com/png/full/957-9571167_airbnb-png.png",
 };
 
-export default function RootLayout({
+const font = Nunito({
+  subsets: ["latin"],
+});
+
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const currentUser = await getCurrentUser();
+
   return (
     <html lang="en">
-      <body className={nunito.className}>
-        <Providers>
-          <Navbar />
-          <main className="pb-16 md:pt-28 pt-24">{children}</main>
-        </Providers>
+      <body className={font.className}>
+        <ClientOnly>
+          <ToastContainerBar />
+          <SearchModal />
+          <RegisterModal />
+          <LoginModal />
+          <RentModal />
+          <Navbar currentUser={currentUser} />
+        </ClientOnly>
+        <div className="pb-20 pt-28">{children}</div>
+        <Footer />
       </body>
-      <GoogleAnalytics gaId={process.env.GA_MEASUREMENT_ID || ""} />
     </html>
   );
 }

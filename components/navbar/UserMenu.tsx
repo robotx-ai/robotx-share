@@ -1,96 +1,106 @@
 "use client";
-import React from "react";
-import { AiOutlineMenu } from "react-icons/ai";
-import { useRouter } from "next/navigation";
-import { signOut } from "next-auth/react";
-import { User } from "next-auth";
 
+import useLoginModel from "@/hook/useLoginModal";
+import useRegisterModal from "@/hook/useRegisterModal";
+import useRentModal from "@/hook/useRentModal";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+
+import { SafeUser } from "@/types";
+import { signOut } from "next-auth/react";
+import { useCallback, useState } from "react";
+import { AiOutlineMenu } from "react-icons/ai";
 import Avatar from "../Avatar";
 import MenuItem from "./MenuItem";
-import Menu from "@/components/Menu";
-import RentModal from "../modals/RentModal";
-import Modal from "../modals/Modal";
-import AuthModal from "../modals/AuthModal";
-import { menuItems } from "@/utils/constants";
 
-interface UserMenuProps {
-  user?: User;
-}
+type Props = {
+  currentUser?: SafeUser | null;
+};
 
-const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
+function UserMenu({ currentUser }: Props) {
   const router = useRouter();
+  const registerModel = useRegisterModal();
+  const loginModel = useLoginModel();
+  const rentModel = useRentModal();
+  const [isOpen, setIsOpen] = useState(false);
 
-  const redirect = (url: string) => {
-    router.push(url);
-  };
+  const toggleOpen = useCallback(() => {
+    setIsOpen((value) => !value);
+  }, []);
+
+  const onRent = useCallback(() => {
+    if (!currentUser) {
+      return loginModel.onOpen();
+    }
+
+    rentModel.onOpen();
+  }, [currentUser, loginModel, rentModel]);
 
   return (
     <div className="relative">
       <div className="flex flex-row items-center gap-3">
-        <Modal>
-          <Modal.Trigger name={user ? "share" : "Login"}>
-            <button
-              type="button"
-              className="hidden md:block text-sm font-bold py-3 px-4 rounded-full hover:bg-neutral-100 transition cursor-pointer text-[#585858]"
-            >
-              Share your home
-            </button>
-          </Modal.Trigger>
-          <Menu>
-            <Menu.Toggle id="user-menu">
-              <button
-                type="button"
-                className=" p-4 md:py-1 md:px-2 border-[1px]   border-neutral-200  flex  flex-row  items-center   gap-3   rounded-full   cursor-pointer   hover:shadow-md   transition duration-300"
-              >
-                <AiOutlineMenu />
-                <div className="hidden md:block">
-                  <Avatar src={user?.image} />
-                </div>
-              </button>
-            </Menu.Toggle>
-            <Menu.List className="shadow-[0_0_36px_4px_rgba(0,0,0,0.075)] rounded-xl bg-white text-sm">
-              {user ? (
-                <>
-                  {menuItems.map((item) => (
-                    <MenuItem
-                      label={item.label}
-                      onClick={() => redirect(item.path)}
-                      key={item.label}
-                    />
-                  ))}
-
-                  <Modal.Trigger name="share">
-                    <MenuItem label="Share your home" />
-                  </Modal.Trigger>
-                  <hr />
-                  <MenuItem label="Log out" onClick={signOut} />
-                </>
-              ) : (
-                <>
-                  <Modal.Trigger name="Login">
-                    <MenuItem label="Log in" />
-                  </Modal.Trigger>
-
-                  <Modal.Trigger name="Sign up">
-                    <MenuItem label="Sign up" />
-                  </Modal.Trigger>
-                </>
-              )}
-            </Menu.List>
-          </Menu>
-          <Modal.Window name="Login">
-            <AuthModal name="Login" />
-          </Modal.Window>
-          <Modal.Window name="Sign up">
-            <AuthModal name="Sign up" />
-          </Modal.Window>
-          <Modal.Window name="share">
-            <RentModal />
-          </Modal.Window>
-        </Modal>
+        <div
+          className="hidden md:block text-sm font-semibold py-3 px-4 rounded-full hover:bg-neutral-100 transition cursor-pointer"
+          onClick={onRent}
+        >
+          Airbnb your Home
+        </div>
+        <div
+          onClick={toggleOpen}
+          className="p-4 md:py-1 md:px-2 border-[1px] flex flex-row items-center gap-3 rounded-full cursor-pointer hover:shadow-md transition"
+        >
+          <AiOutlineMenu />
+          <div className="hidden md:block">
+            {currentUser ? (
+              <Avatar src={currentUser?.image!} userName={currentUser?.name} />
+            ) : (
+              <Image
+                className="rounded-full"
+                height="30"
+                width="30"
+                alt="Avatar"
+                src="/assets/avatar.png"
+              />
+            )}
+          </div>
+        </div>
       </div>
+      {isOpen && (
+        <div className="absolute rounded-xl shadow-md w-[40vw] md:w-3/4 bg-white overflow-hidden right-0 top-12 text-sm">
+          <div className="flex flex-col cursor-pointer">
+            {currentUser ? (
+              <>
+                <MenuItem
+                  onClick={() => router.push("/trips")}
+                  label="My trips"
+                />
+                <MenuItem
+                  onClick={() => router.push("/favorites")}
+                  label="My favorites"
+                />
+                <MenuItem
+                  onClick={() => router.push("/reservations")}
+                  label="My reservations"
+                />
+                <MenuItem
+                  onClick={() => router.push("/properties")}
+                  label="My properties"
+                />
+                <MenuItem onClick={onRent} label="Airbnb your home" />
+                <hr />
+                <MenuItem onClick={() => signOut()} label="Logout" />
+              </>
+            ) : (
+              <>
+                <MenuItem onClick={loginModel.onOpen} label="Login" />
+                <MenuItem onClick={registerModel.onOpen} label="Sign up" />
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
-};
+}
 
 export default UserMenu;

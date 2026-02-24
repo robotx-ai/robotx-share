@@ -1,20 +1,25 @@
-import React from "react";
-import Image from "next/image";
-import Link from "next/link";
+"use client";
 
-const Logo = () => {
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import React from "react";
+
+type Props = {};
+
+function Logo({}: Props) {
+  const router = useRouter();
+
   return (
-    <Link href="/" className="h-[35px] w-[150px] relative hidden md:block ">
+    <div onClick={() => router.push("/")}>
       <Image
-        src="/images/vacationhub.png"
         alt="logo"
-        fill
-        sizes="150px"
-        priority
-        unoptimized
+        className="hidden md:block cursor-pointer"
+        height="100"
+        width="100"
+        src="/assets/logo.png"
       />
-    </Link>
+    </div>
   );
-};
+}
 
 export default Logo;

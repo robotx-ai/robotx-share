@@ -1,62 +1,51 @@
 "use client";
 
-import React from "react";
+import React, { useCallback } from "react";
 import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
-import { FieldValues, UseFormWatch } from "react-hook-form";
 
-interface CounterProps {
+type Props = {
   title: string;
   subtitle: string;
-  onChange: (name: string, value: number) => void;
-  name: string;
-  watch: UseFormWatch<FieldValues>;
-}
+  value: number;
+  onChange: (value: number) => void;
+};
 
-const Counter: React.FC<CounterProps> = ({
-  title,
-  subtitle,
-  onChange,
-  name,
-  watch,
-}) => {
-  const value = watch(name);
-  
-  const onAdd = () => {
-    onChange(name, value + 1);
-  };
+function Counter({ title, subtitle, value, onChange }: Props) {
+  const onAdd = useCallback(() => {
+    onChange(value + 1);
+  }, [onChange, value]);
 
-  const onReduce = () => {
-    if (value === 1) return;
-    onChange(name, value - 1);
-  };
+  const onReduce = useCallback(() => {
+    if (value === 1) {
+      return;
+    }
+
+    onChange(value - 1);
+  }, [value, onChange]);
 
   return (
     <div className="flex flex-row items-center justify-between">
       <div className="flex flex-col">
-        <h3 className="font-semibold">{title}</h3>
-        <p className="font-light text-gray-600 text-[15.5px]">{subtitle}</p>
+        <div className="font-medium">{title}</div>
+        <div className="font-light text-gray-600">{subtitle}</div>
       </div>
       <div className="flex flex-row items-center gap-4">
-        <button type="button"
+        <div
           onClick={onReduce}
-          className=" w-8 h-8 rounded-full border-[1px]  border-neutral-400 flex
-          items-center justify-center text-neutral-600 cursor-pointer hover:opacity-80  transition"
+          className=" w-10 h-10 rounded-full border-[1px] border-neutral-400 flex items-center justify-center text-neutral-600 cursor-pointer hover:opacity-80 transition"
         >
           <AiOutlineMinus />
-        </button>
-        <span className=" font-light text-lg text-neutral-600 select-none">
-          {value}
-        </span>
-        <button type="button"
+        </div>
+        <div className="font-light text-xl text-neutral-600">{value}</div>
+        <div
           onClick={onAdd}
-          className=" w-8 h-8 rounded-full border-[1px] border-neutral-400 flex items-center justify-center  text-neutral-600 cursor-pointer hover:opacity-80 transition"
-          autoFocus={title === "Guests"}
+          className="w-10 h-10 rounded-full border-[1px] border-neutral-400 flex items-center justify-center text-neutral-600 cursor-pointer hover:opacity-80 transition"
         >
           <AiOutlinePlus />
-        </button>
+        </div>
       </div>
     </div>
   );
-};
+}
 
 export default Counter;

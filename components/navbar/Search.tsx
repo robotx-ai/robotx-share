@@ -1,29 +1,36 @@
 "use client";
-import React, { useMemo } from "react";
-import dynamic from "next/dynamic";
+
+import useCountries from "@/hook/useCountries";
+import useSearchModal from "@/hook/useSearchModal";
 import { differenceInDays } from "date-fns";
 import { useSearchParams } from "next/navigation";
-import { FaSearch } from "react-icons/fa";
+import { useMemo } from "react";
+import { BiSearch } from "react-icons/bi";
 
-import Modal from "../modals/Modal";
+type Props = {};
 
-const SearchModal = dynamic(() => import("@/components/modals/SearchModal"), {
-  ssr: false
-});
+function Search({}: Props) {
+  const searchModel = useSearchModal();
+  const params = useSearchParams();
+  const { getByValue } = useCountries();
 
-const Search = () => {
-  const searchParams = useSearchParams();
+  const locationValue = params?.get("locationValue");
+  const startDate = params?.get("startDate");
+  const endDate = params?.get("endDate");
+  const guestCount = params?.get("guestCount");
 
-  const country = searchParams?.get("country");
+  const locationLabel = useMemo(() => {
+    if (locationValue) {
+      return getByValue(locationValue as string)?.label;
+    }
 
-  const startDate = searchParams?.get("startDate");
-  const endDate = searchParams?.get("endDate");
-  const guestCount = searchParams?.get("guestCount");
+    return "Anywhere";
+  }, [getByValue, locationValue]);
 
   const durationLabel = useMemo(() => {
     if (startDate && endDate) {
-      const start = new Date(startDate);
-      const end = new Date(endDate);
+      const start = new Date(startDate as string);
+      const end = new Date(endDate as string);
       let diff = differenceInDays(end, start);
 
       if (diff === 0) {
@@ -33,43 +40,36 @@ const Search = () => {
       return `${diff} Days`;
     }
 
-    return "Any week";
-  }, [endDate, startDate]);
+    return "Any Week";
+  }, [startDate, endDate]);
 
-  const guestLabel = guestCount ? `${guestCount} Guests` : "Add Guests";
+  const guessLabel = useMemo(() => {
+    if (guestCount) {
+      return `${guestCount} Guests`;
+    }
+
+    return "Add Guests";
+  }, []);
 
   return (
-    <Modal>
-      <Modal.Trigger name="search">
-        <button
-          type="button"
-          className="border-[1px] w-full md:w-auto py-2 rounded-full shadow-sm hover:shadow-md transition duration-300 cursor-pointer"
-        >
-          <div className="flex flex-row justify-between items-center">
-            <small className="text-sm font-bold px-6 text-[#585858]">
-              {country ? country : "Anywhere"}
-            </small>
-
-            <small className="hidden sm:block text-sm font-bold px-6 border-x-[1px] flex-1 text-center text-[#585858]">
-              {durationLabel}
-            </small>
-
-            <div className="text-sm pl-6 pr-2 text-gray-600 flex flex-row items-center gap-4">
-              <small className="hidden sm:block font-normal text-sm">
-                {guestLabel}
-              </small>
-              <div className="p-2  bg-rose-500 rounded-full  text-white">
-                <FaSearch className="text-[12px] " />
-              </div>
-            </div>
+    <div
+      onClick={searchModel.onOpen}
+      className="border-[1px] w-full md:w-auto py-2 rounded-full shadow-sm hover:shadow-md transition cursor-pointer"
+    >
+      <div className="flex flex-row items-center justify-between">
+        <div className="text-sm font-semibold px-6">{locationLabel}</div>
+        <div className="hidden sm:block text-losm font-semibold px-6 border-x-[1px] flex-1 text-center">
+          {durationLabel}
+        </div>
+        <div className="text-sm pl-6 pr-2 text-gray-600 flex flex-row items-center gap-3">
+          <div className="hidden sm:block text-center">{guessLabel}</div>
+          <div className="p-2 bg-rose-500 rounded-full text-white">
+            <BiSearch size={18} />
           </div>
-        </button>
-      </Modal.Trigger>
-      <Modal.Window name="search">
-        <SearchModal />
-      </Modal.Window>
-    </Modal>
+        </div>
+      </div>
+    </div>
   );
-};
+}
 
 export default Search;
