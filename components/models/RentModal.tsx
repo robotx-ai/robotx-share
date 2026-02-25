@@ -96,14 +96,14 @@ function RentModal({}: Props) {
     axios
       .post("/api/listings", data)
       .then(() => {
-        toast.success("Listing Created!");
+        toast.success("Service created!");
         router.refresh();
         reset();
         setStep(STEPS.CATEGORY);
         rentModel.onClose();
       })
       .catch(() => {
-        toast.error("Something Went Wrong");
+        toast.error("Something went wrong");
       })
       .finally(() => {
         setIsLoading(false);
@@ -112,7 +112,7 @@ function RentModal({}: Props) {
 
   const actionLabel = useMemo(() => {
     if (step === STEPS.PRICE) {
-      return "Create";
+      return "Create Service";
     }
 
     return "Next";
@@ -129,8 +129,8 @@ function RentModal({}: Props) {
   let bodyContent = (
     <div className="flex flex-col gap-8">
       <Heading
-        title="Which of these best describes your place?"
-        subtitle="Pick a category"
+        title="Which service type are you publishing?"
+        subtitle="Select a RobotX service category."
       />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto scrollbar-thin scrollbar-thumb-[#FF5A5F]">
         {categories.map((item, index) => (
@@ -151,8 +151,8 @@ function RentModal({}: Props) {
     bodyContent = (
       <div className="flex flex-col gap-8">
         <Heading
-          title="Where is your place located?"
-          subtitle="Help guests find you!"
+          title="Where does this service operate?"
+          subtitle="Set the coverage area customers can book."
         />
         <CountrySelect
           value={location}
@@ -167,26 +167,26 @@ function RentModal({}: Props) {
     bodyContent = (
       <div className="flex flex-col gap-8">
         <Heading
-          title="Share some basics about your place"
-          subtitle="What amenities do you have?"
+          title="Define service capacity"
+          subtitle="Set expected scale for each booking."
         />
         <Counter
-          title="Guests"
-          subtitle="How many guest do you allow?"
+          title="Customers"
+          subtitle="How many customers should this service support?"
           value={guestCount}
           onChange={(value) => setCustomValue("guestCount", value)}
         />
         <hr />
         <Counter
-          title="Rooms"
-          subtitle="How many rooms do you have?"
+          title="Service Units"
+          subtitle="How many robot units are included?"
           value={roomCount}
           onChange={(value) => setCustomValue("roomCount", value)}
         />
         <hr />
         <Counter
-          title="Bathrooms"
-          subtitle="How many Bathrooms do you have?"
+          title="Coverage Zones"
+          subtitle="How many areas can this service cover?"
           value={bathroomCount}
           onChange={(value) => setCustomValue("bathroomCount", value)}
         />
@@ -198,8 +198,8 @@ function RentModal({}: Props) {
     bodyContent = (
       <div className="flex flex-col gap-8">
         <Heading
-          title="Add a photo of your place"
-          subtitle="Show guests what your place looks like!"
+          title="Add service visuals"
+          subtitle="Show customers the robots and deployment setup."
         />
         <ImageUpload
           onChange={(value) => setCustomValue("imageSrc", value)}
@@ -213,8 +213,8 @@ function RentModal({}: Props) {
     bodyContent = (
       <div className="flex flex-col gap-8">
         <Heading
-          title="Now, set your price"
-          subtitle="How much do you charge per night?"
+          title="Describe the service package"
+          subtitle="Add a clear title and what this service includes."
         />
         <Input
           id="title"
@@ -242,7 +242,7 @@ function RentModal({}: Props) {
       <div className="flex flex-col gap-8">
         <Heading
           title="Now, set your price"
-          subtitle="How much do you charge per night?"
+          subtitle="How much do you charge per day?"
         />
         <Input
           id="price"
@@ -262,7 +262,7 @@ function RentModal({}: Props) {
     <Modal
       disabled={isLoading}
       isOpen={rentModel.isOpen}
-      title="Airbnb your home!"
+      title="Create a RobotX service"
       actionLabel={actionLabel}
       onSubmit={handleSubmit(onSubmit)}
       secondaryActionLabel={secondActionLabel}

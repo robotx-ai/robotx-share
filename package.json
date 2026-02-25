@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "supabase": "npx -y supabase@latest",
     "db:migrate:sql": "prisma migrate diff --from-empty --to-schema-datamodel prisma/schema.prisma --script > prisma/migrations/20260224103000_init_supabase_postgres/migration.sql",
     "db:migrate:data": "node scripts/migrate-mongo-to-postgres.js",
     "db:migrate:verify": "node scripts/verify-migration.js"

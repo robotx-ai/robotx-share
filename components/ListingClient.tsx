@@ -67,12 +67,12 @@ function ListingClient({ reservations = [], listing, currentUser }: Props) {
         listingId: listing?.id,
       })
       .then(() => {
-        toast.success("Success!");
+        toast.success("Booking confirmed");
         setDateRange(initialDateRange);
         router.push("/trips");
       })
       .catch(() => {
-        toast.error("Something Went Wrong");
+        toast.error("Something went wrong");
       })
       .finally(() => {
         setIsLoading(false);

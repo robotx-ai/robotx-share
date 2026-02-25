@@ -11,9 +11,9 @@ import "../styles/globals.css";
 import getCurrentUser from "./actions/getCurrentUser";
 
 export const metadata = {
-  title: "Airbnb Clone",
-  description: "Airbnb Clone",
-  icons: "https://www.seekpng.com/png/full/957-9571167_airbnb-png.png",
+  title: "RobotX Share",
+  description: "Robot service rental marketplace by RobotX",
+  icons: "/assets/logo.png",
 };
 
 const font = Nunito({

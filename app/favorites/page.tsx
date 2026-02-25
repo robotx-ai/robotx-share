@@ -23,8 +23,8 @@ const FavoritePage = async (props: Props) => {
     return (
       <ClientOnly>
         <EmptyState
-          title="No favorites found"
-          subtitle="Looks like you have no favorite listings."
+          title="No saved services found"
+          subtitle="Looks like you have no saved services yet."
         />
       </ClientOnly>
     );

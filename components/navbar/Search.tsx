@@ -24,7 +24,7 @@ function Search({}: Props) {
       return getByValue(locationValue as string)?.label;
     }
 
-    return "Anywhere";
+    return "Service Area";
   }, [getByValue, locationValue]);
 
   const durationLabel = useMemo(() => {
@@ -40,16 +40,16 @@ function Search({}: Props) {
       return `${diff} Days`;
     }
 
-    return "Any Week";
+    return "Any Dates";
   }, [startDate, endDate]);
 
-  const guessLabel = useMemo(() => {
+  const customerLabel = useMemo(() => {
     if (guestCount) {
-      return `${guestCount} Guests`;
+      return `${guestCount} Customers`;
     }
 
-    return "Add Guests";
-  }, []);
+    return "Add Customers";
+  }, [guestCount]);
 
   return (
     <div
@@ -62,7 +62,7 @@ function Search({}: Props) {
           {durationLabel}
         </div>
         <div className="text-sm pl-6 pr-2 text-gray-600 flex flex-row items-center gap-3">
-          <div className="hidden sm:block text-center">{guessLabel}</div>
+          <div className="hidden sm:block text-center">{customerLabel}</div>
           <div className="p-2 bg-rose-500 rounded-full text-white">
             <BiSearch size={18} />
           </div>

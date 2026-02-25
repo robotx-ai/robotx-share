@@ -23,8 +23,8 @@ const PropertiesPage = async (props: Props) => {
     return (
       <ClientOnly>
         <EmptyState
-          title="No Properties found"
-          subtitle="Looks like you have not any Properties"
+          title="No services found"
+          subtitle="Looks like you have not published any services."
         />
       </ClientOnly>
     );

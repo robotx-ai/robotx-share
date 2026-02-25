@@ -41,9 +41,9 @@ export default async function getCurrentUser() {
       favoriteListingIds: favoriteListings.map((favorite) => favorite.listingId),
     };
   } catch (error: any) {
-    console.log(
-      "🚀 ~ file: getCurrentUser.ts:13 ~ getCurrentUser ~ error:",
-      error
-    );
+    if (process.env.NODE_ENV === "development") {
+      console.warn("getCurrentUser failed, returning null session user", error);
+    }
+    return null;
   }
 }

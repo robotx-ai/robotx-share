@@ -9,7 +9,7 @@ type Props = {};
 function Sleep({}: Props) {
   return (
     <div>
-      <p className="text-xl font-semibold">{`Where you'll sleep`}</p>
+      <p className="text-xl font-semibold">Deployment stages</p>
       <div className="flex justify-between pt-6">
         <motion.div
           initial={{
@@ -22,8 +22,8 @@ function Sleep({}: Props) {
         >
           <div className="flex flex-col justify-start items-start px-6 py-6 gap-1 text-center">
             <IoBedOutline size={25} />
-            <p className="text-lg text-black font-medium">Bedroom 1</p>
-            <p className="text-sm text-neutral-500">1 king bed</p>
+            <p className="text-lg text-black font-medium">Stage 1</p>
+            <p className="text-sm text-neutral-500">On-site setup</p>
           </div>
         </motion.div>
         <motion.div
@@ -37,8 +37,8 @@ function Sleep({}: Props) {
         >
           <div className="flex flex-col justify-start items-start px-6 py-6 gap-1 text-center">
             <IoBedOutline size={25} />
-            <p className="text-lg text-black font-medium">Bedroom 2</p>
-            <p className="text-sm text-neutral-500">1 queen bed</p>
+            <p className="text-lg text-black font-medium">Stage 2</p>
+            <p className="text-sm text-neutral-500">Active service window</p>
           </div>
         </motion.div>
         <motion.div
@@ -55,10 +55,8 @@ function Sleep({}: Props) {
               <IoBedOutline size={25} />
               <BiBed size={25} />
             </div>
-            <p className="text-lg text-black font-medium">Bedroom 3</p>
-            <p className="text-sm text-neutral-500">
-              1 queen bed, 1 single bed
-            </p>
+            <p className="text-lg text-black font-medium">Stage 3</p>
+            <p className="text-sm text-neutral-500">Wrap-up and reporting</p>
           </div>
         </motion.div>
       </div>

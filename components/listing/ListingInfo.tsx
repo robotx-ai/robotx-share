@@ -46,13 +46,13 @@ function ListingInfo({
     <div className="col-span-4 flex flex-col gap-8">
       <div className="flex flex-col gap-2">
         <div className=" text-xl font-semibold flex flex-row items-center gap-2">
-          <div>Hosted by {user?.name}</div>
+          <div>Operated by {user?.name}</div>
           <Avatar src={user?.image} userName={user?.name} />
         </div>
         <div className="flex flex-row items-center gap-4 font-light text-neutral-500">
-          <p>{guestCount} guests</p>
-          <p>{roomCount} rooms</p>
-          <p>{bathroomCount} bathrooms</p>
+          <p>{guestCount} customers</p>
+          <p>{roomCount} service units</p>
+          <p>{bathroomCount} coverage zones</p>
         </div>
       </div>
       <hr />
@@ -66,11 +66,11 @@ function ListingInfo({
       <hr />
       <div className="flex flex-col">
         <p className="text-4xl font-bold text-[#FF5A5F]">
-          air<span className="text-black">cover</span>
+          RobotX <span className="text-black">Service Assurance</span>
         </p>
         <p className="text-neutral-500 pt-3">
-          Every booking includes free protection from Host cancellations,
-          listing inaccuracies, and other issues like trouble checking in.
+          Every booking includes support coverage for schedule changes,
+          service delivery issues, and deployment coordination.
         </p>
         <p className="text-black font-bold underline pt-3 cursor-pointer">
           Learn more
@@ -83,7 +83,7 @@ function ListingInfo({
       <hr />
       <Offers />
       <hr />
-      <p className="text-xl font-semibold">{`Where you’ll be`}</p>
+      <p className="text-xl font-semibold">{`Service coverage area`}</p>
       <Map center={coordinates} locationValue={locationValue} />
     </div>
   );

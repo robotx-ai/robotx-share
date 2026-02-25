@@ -108,7 +108,7 @@ function SearchModal({}: Props) {
 
   const actionLabel = useMemo(() => {
     if (step === STEPS.INFO) {
-      return "Search";
+      return "Find Services";
     }
 
     return "Next";
@@ -125,8 +125,8 @@ function SearchModal({}: Props) {
   let bodyContent = (
     <div className="flex flex-col gap-8">
       <Heading
-        title="Where do you wanna go?"
-        subtitle="Find the perfect location!"
+        title="Where do you need service?"
+        subtitle="Choose a coverage area."
       />
       <CountrySelect
         value={location}
@@ -141,8 +141,8 @@ function SearchModal({}: Props) {
     bodyContent = (
       <div className="flex flex-col gap-8">
         <Heading
-          title="When do you plan to go?"
-          subtitle="Make sure everyone is free!"
+          title="When should service run?"
+          subtitle="Choose your booking dates."
         />
         <Calendar
           onChange={(value) => setDateRange(value.selection)}
@@ -155,19 +155,22 @@ function SearchModal({}: Props) {
   if (step === STEPS.INFO) {
     bodyContent = (
       <div className="flex flex-col gap-8">
-        <Heading title="More information" subtitle="Find your perfect place!" />
+        <Heading
+          title="Service requirements"
+          subtitle="Tell us the scale of deployment."
+        />
         <Counter
           onChange={(value) => setGuestCount(value)}
           value={guestCount}
-          title="Guests"
-          subtitle="How many guests are coming?"
+          title="Customers"
+          subtitle="How many customers should this booking support?"
         />
         <hr />
         <Counter
           onChange={(value) => setRoomCount(value)}
           value={roomCount}
-          title="Rooms"
-          subtitle="How many rooms do you need?"
+          title="Service Units"
+          subtitle="How many robot units do you need?"
         />
         <hr />
         <Counter
@@ -175,8 +178,8 @@ function SearchModal({}: Props) {
             setBathroomCount(value);
           }}
           value={bathroomCount}
-          title="Bathrooms"
-          subtitle="How many bahtrooms do you need?"
+          title="Coverage Zones"
+          subtitle="How many areas should the service cover?"
         />
       </div>
     );
@@ -190,7 +193,7 @@ function SearchModal({}: Props) {
       secondaryAction={step === STEPS.LOCATION ? undefined : onBack}
       secondaryActionLabel={secondActionLabel}
       title="Filters"
-      actionLabel="Search"
+      actionLabel={actionLabel}
       body={bodyContent}
     />
   );

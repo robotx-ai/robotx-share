@@ -12,47 +12,47 @@ import { RiSafeLine } from "react-icons/ri";
 
 const offersRowOne = [
   {
-    label: "Garden view",
+    label: "Live operator monitoring",
     icon: GiButterflyFlower,
   },
   {
-    label: "Hot water",
+    label: "Rapid response support",
     icon: BsFire,
   },
 
   {
-    label: "Wifi",
+    label: "Remote connectivity",
     icon: AiOutlineWifi,
   },
   {
-    label: "Coffee",
+    label: "On-site onboarding",
     icon: MdOutlineCoffeeMaker,
   },
   {
-    label: "Security cameras on property",
+    label: "Safety camera monitoring",
     icon: BiCctv,
   },
 ];
 
 const offersRowTwo = [
   {
-    label: "Bathtub",
+    label: "Daily maintenance checks",
     icon: MdOutlineBathtub,
   },
   {
-    label: "Dedicated workspace",
+    label: "Dedicated control workspace",
     icon: GrWorkshop,
   },
   {
-    label: "Safe",
+    label: "Safety compliance protocols",
     icon: RiSafeLine,
   },
   {
-    label: "Free parking on premises",
+    label: "On-site deployment support",
     icon: AiOutlineCar,
   },
   {
-    label: "Fire extinguisher",
+    label: "Emergency response readiness",
     icon: FaFireExtinguisher,
   },
 ];
@@ -62,7 +62,7 @@ type Props = {};
 function Offers({}: Props) {
   return (
     <div>
-      <p className="text-xl font-semibold">What this place offers</p>
+      <p className="text-xl font-semibold">What this service includes</p>
       <div className="flex justify-start space-x-12 pt-6">
         <div className="flex flex-col gap-2">
           {offersRowOne.map((item, index) => (

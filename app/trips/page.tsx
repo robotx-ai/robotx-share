@@ -26,8 +26,8 @@ const TripsPage = async (props: Props) => {
     return (
       <ClientOnly>
         <EmptyState
-          title="No trips found"
-          subtitle="Looks like you havent reserved any trips."
+          title="No bookings found"
+          subtitle="Looks like you have not booked any services yet."
         />
       </ClientOnly>
     );

@@ -82,7 +82,7 @@ function ListingCard({
             fill
             className="object-cover h-full w-full group-hover:scale-110 transition"
             src={data.imageSrc}
-            alt="listing"
+            alt="service"
           />
           <div className="absolute top-3 right-3">
             <HeartButton listingId={data.id} currentUser={currentUser} />
@@ -96,7 +96,7 @@ function ListingCard({
         </div>
         <div className="flex flex-row items-center gap-">
           <div className="flex gap-1 font-semibold">
-            ${price} {!reservation && <div className="font-light"> Night</div>}
+            ${price} {!reservation && <div className="font-light"> / day</div>}
           </div>
         </div>
         {onAction && actionLabel && (

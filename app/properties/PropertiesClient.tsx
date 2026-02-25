@@ -25,7 +25,7 @@ function PropertiesClient({ listings, currentUser }: Props) {
       axios
         .delete(`/api/listings/${id}`)
         .then(() => {
-          toast.info("Listing deleted");
+          toast.info("Service deleted");
           router.refresh();
         })
         .catch((error) => {
@@ -40,7 +40,7 @@ function PropertiesClient({ listings, currentUser }: Props) {
 
   return (
     <Container>
-      <Heading title="Properties" subtitle="List of your properties" />
+      <Heading title="My Services" subtitle="Services currently published by your account." />
       <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-8">
         {listings.map((listing: any) => (
           <ListingCard
@@ -49,7 +49,7 @@ function PropertiesClient({ listings, currentUser }: Props) {
             actionId={listing.id}
             onAction={onDelete}
             disabled={deletingId === listing.id}
-            actionLabel="Delete property"
+            actionLabel="Delete service"
             currentUser={currentUser}
           />
         ))}
