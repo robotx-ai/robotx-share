@@ -132,7 +132,7 @@ function RentModal({}: Props) {
         title="Which service type are you publishing?"
         subtitle="Select a RobotX service category."
       />
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto scrollbar-thin scrollbar-thumb-[#FF5A5F]">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700">
         {categories.map((item, index) => (
           <div key={index} className="col-span-1">
             <CategoryInput

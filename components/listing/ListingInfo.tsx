@@ -65,7 +65,7 @@ function ListingInfo({
       )}
       <hr />
       <div className="flex flex-col">
-        <p className="text-4xl font-bold text-[#FF5A5F]">
+        <p className="text-4xl font-bold text-robotx">
           RobotX <span className="text-black">Service Assurance</span>
         </p>
         <p className="text-neutral-500 pt-3">

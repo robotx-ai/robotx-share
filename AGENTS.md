@@ -82,10 +82,17 @@ Hard rule:
 - Ensure visible cross-link CTA to `robotxstore.com` in navbar and footer.
 - Keep location/date filtering flow, but wording must describe service booking.
 
+## Theme Color Policy (MVP)
+- User-facing theme colors must be restricted to white, gray, and black.
+- Replace legacy accent colors (for example rose/coral/indigo/blue) with neutral grayscale equivalents.
+- Prefer centralized Tailwind/CSS tokens for neutral palette updates instead of scattered hardcoded values.
+- Do not introduce non-neutral theme colors unless there is an explicit product request in the task thread.
+
 ## Definition of Done for Rebrand Tasks
 - All visible Airbnb wording removed.
 - Category filters show exactly 4 RobotX services.
 - Non-admin cannot access create/edit/delete service flows.
+- Theme colors use only white/gray/black across user-facing UI in MVP scope.
 - `npm run lint` passes.
 - `npm run build` passes.
 - Manual smoke checklist completed (home browse, detail, booking flow, auth flow, favorites/trips/reservations pages).

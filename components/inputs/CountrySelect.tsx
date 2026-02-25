@@ -47,8 +47,8 @@ function CountrySelect({ value, onChange }: Props) {
           borderRadius: 6,
           colors: {
             ...theme.colors,
-            primary: "black",
-            primary25: "#ffe4e6",
+            primary: "#111827",
+            primary25: "#f3f4f6",
           },
         })}
       />

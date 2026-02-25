@@ -6,7 +6,16 @@ module.exports = {
     "./components/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        robotx: {
+          DEFAULT: "#111827",
+          muted: "#6b7280",
+          subtle: "#e5e7eb",
+          surface: "#f3f4f6",
+        },
+      },
+    },
   },
   plugins: [require("tailwind-scrollbar")],
 };

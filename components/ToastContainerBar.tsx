@@ -18,7 +18,7 @@ function ToastContainerBar({}: Props) {
         closeOnClick
         pauseOnFocusLoss
         pauseOnHover
-        theme="colored"
+        theme="light"
       />
     </>
   );
