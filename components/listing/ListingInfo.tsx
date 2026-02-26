@@ -40,7 +40,9 @@ function ListingInfo({
   locationValue,
 }: Props) {
   const { getByValue } = useCountries();
-  const coordinates = getByValue(locationValue)?.latlng;
+  const location = getByValue(locationValue);
+  const coordinates = location?.latlng;
+  const flagCode = locationValue?.length === 2 ? locationValue : "US";
 
   return (
     <div className="col-span-4 flex flex-col gap-8">
@@ -84,7 +86,7 @@ function ListingInfo({
       <Offers />
       <hr />
       <p className="text-xl font-semibold">{`Service coverage area`}</p>
-      <Map center={coordinates} locationValue={locationValue} />
+      <Map center={coordinates} locationValue={locationValue} flagCode={flagCode} />
     </div>
   );
 }

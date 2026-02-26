@@ -7,6 +7,11 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import {
+  DEFAULT_SERVICE_AREA_VALUE,
+  getServiceAreaByValue,
+  SERVICE_AREAS,
+} from "@/lib/serviceLocation";
 
 import Heading from "../Heading";
 import CategoryInput from "../inputs/CategoryInput";
@@ -29,6 +34,8 @@ enum STEPS {
 }
 
 function RentModal({}: Props) {
+  const defaultServiceArea =
+    getServiceAreaByValue(DEFAULT_SERVICE_AREA_VALUE) || SERVICE_AREAS[0];
   const router = useRouter();
   const rentModel = useRentModal();
   const [step, setStep] = useState(STEPS.CATEGORY);
@@ -44,7 +51,7 @@ function RentModal({}: Props) {
   } = useForm<FieldValues>({
     defaultValues: {
       category: "",
-      location: null,
+      location: defaultServiceArea,
       guestCount: 1,
       roomCount: 1,
       bathroomCount: 1,
@@ -67,7 +74,7 @@ function RentModal({}: Props) {
       dynamic(() => import("../Map"), {
         ssr: false,
       }),
-    [location]
+    []
   );
 
   const setCustomValue = (id: string, value: any) => {
@@ -158,7 +165,11 @@ function RentModal({}: Props) {
           value={location}
           onChange={(value) => setCustomValue("location", value)}
         />
-        <Map center={location?.latlng} />
+        <Map
+          center={location?.latlng ?? defaultServiceArea.latlng}
+          locationValue={location?.value ?? defaultServiceArea.value}
+          flagCode={location?.flag ?? "US"}
+        />
       </div>
     );
   }

@@ -15,9 +15,10 @@ import MenuItem from "./MenuItem";
 
 type Props = {
   currentUser?: SafeUser | null;
+  isAdmin?: boolean;
 };
 
-function UserMenu({ currentUser }: Props) {
+function UserMenu({ currentUser, isAdmin = false }: Props) {
   const router = useRouter();
   const registerModel = useRegisterModal();
   const loginModel = useLoginModel();
@@ -33,18 +34,24 @@ function UserMenu({ currentUser }: Props) {
       return loginModel.onOpen();
     }
 
+    if (!isAdmin) {
+      return;
+    }
+
     rentModel.onOpen();
-  }, [currentUser, loginModel, rentModel]);
+  }, [currentUser, isAdmin, loginModel, rentModel]);
 
   return (
     <div className="relative">
       <div className="flex flex-row items-center gap-3">
-        <div
-          className="hidden md:block text-sm font-semibold py-3 px-4 rounded-full hover:bg-neutral-100 transition cursor-pointer"
-          onClick={onRent}
-        >
-          List a Service
-        </div>
+        {isAdmin && (
+          <div
+            className="hidden md:block text-sm font-semibold py-3 px-4 rounded-full hover:bg-neutral-100 transition cursor-pointer"
+            onClick={onRent}
+          >
+            List a Service
+          </div>
+        )}
         <div
           onClick={toggleOpen}
           className="p-4 md:py-1 md:px-2 border-[1px] flex flex-row items-center gap-3 rounded-full cursor-pointer hover:shadow-md transition"
@@ -82,16 +89,26 @@ function UserMenu({ currentUser }: Props) {
                   onClick={() => router.push("/reservations")}
                   label="Service bookings"
                 />
+                {isAdmin && (
+                  <MenuItem
+                    onClick={() => router.push("/properties")}
+                    label="My services"
+                  />
+                )}
+                {isAdmin && <MenuItem onClick={onRent} label="List a service" />}
                 <MenuItem
-                  onClick={() => router.push("/properties")}
-                  label="My services"
+                  onClick={() => window.open("https://robotxshop.com", "_blank")}
+                  label="Visit robotxshop.com"
                 />
-                <MenuItem onClick={onRent} label="List a service" />
                 <hr />
                 <MenuItem onClick={() => signOut()} label="Logout" />
               </>
             ) : (
               <>
+                <MenuItem
+                  onClick={() => window.open("https://robotxshop.com", "_blank")}
+                  label="Visit robotxshop.com"
+                />
                 <MenuItem onClick={loginModel.onOpen} label="Login" />
                 <MenuItem onClick={registerModel.onOpen} label="Sign up" />
               </>

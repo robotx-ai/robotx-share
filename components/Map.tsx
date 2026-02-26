@@ -1,8 +1,14 @@
 "use client";
 
 import L from "leaflet";
-import React from "react";
-import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import React, { useEffect } from "react";
+import {
+  MapContainer,
+  Marker,
+  Popup,
+  TileLayer,
+  useMap,
+} from "react-leaflet";
 
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
@@ -21,16 +27,38 @@ L.Icon.Default.mergeOptions({
 type Props = {
   center?: number[];
   locationValue?: string;
+  flagCode?: string;
+  zoom?: number;
 };
 
-function Map({ center, locationValue }: Props) {
+type RecenterProps = {
+  center?: number[];
+  zoom?: number;
+};
+
+function RecenterMap({ center, zoom }: RecenterProps) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!center) {
+      return;
+    }
+
+    map.setView(center as L.LatLngExpression, zoom ?? map.getZoom());
+  }, [map, center, zoom]);
+
+  return null;
+}
+
+function Map({ center, locationValue, flagCode, zoom }: Props) {
   return (
     <MapContainer
       center={(center as L.LatLngExpression) || [51, -0.09]}
-      zoom={center ? 4 : 2}
+      zoom={zoom ?? (center ? 11 : 2)}
       scrollWheelZoom={false}
       className="h-[35vh] rounded-lg"
     >
+      <RecenterMap center={center} zoom={zoom} />
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -41,7 +69,7 @@ function Map({ center, locationValue }: Props) {
             <Marker position={center as L.LatLngExpression}>
               <Popup>
                 <div className="flex justify-center items-center animate-bounce">
-                  <Flag code={locationValue} className="w-10" />
+                  <Flag code={flagCode ?? "US"} className="w-10" />
                 </div>
               </Popup>
             </Marker>

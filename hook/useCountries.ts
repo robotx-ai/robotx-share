@@ -1,4 +1,8 @@
 import countries from "world-countries";
+import {
+  getServiceAreaByValue,
+  SERVICE_AREAS,
+} from "@/lib/serviceLocation";
 
 const formattedCountries = countries.map((country) => ({
   value: country.cca2,
@@ -9,9 +13,15 @@ const formattedCountries = countries.map((country) => ({
 }));
 
 const useCountries = () => {
-  const getAll = () => formattedCountries;
+  const getAll = () => SERVICE_AREAS;
 
   const getByValue = (value: string) => {
+    const serviceArea = getServiceAreaByValue(value);
+    if (serviceArea) {
+      return serviceArea;
+    }
+
+    // Compatibility fallback for pre-SoCal location values during rollout.
     return formattedCountries.find((item) => item.value === value);
   };
 

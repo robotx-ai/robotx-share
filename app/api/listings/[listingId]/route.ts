@@ -38,7 +38,7 @@ export async function DELETE(
   const { listingId } = params;
 
   if (!listingId || typeof listingId !== "string") {
-    return NextResponse.json({ error: "Invalid listing id." }, { status: 400 });
+    return NextResponse.json({ error: "Invalid service id." }, { status: 400 });
   }
 
   const listing = await prisma.listing.deleteMany({

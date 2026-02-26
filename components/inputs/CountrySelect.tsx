@@ -24,13 +24,17 @@ function CountrySelect({ value, onChange }: Props) {
     <div>
       <Select
         placeholder="Select service area"
-        isClearable
+        isClearable={false}
         options={getAll()}
         value={value}
-        onChange={(value) => onChange(value as CountrySelectValue)}
+        onChange={(value) => {
+          if (value) {
+            onChange(value as CountrySelectValue);
+          }
+        }}
         formatOptionLabel={(option: any) => (
           <div className="flex flex-row items-center gap-3">
-            <Flag code={option.value} className="w-5" />
+            <Flag code={option.flag} className="w-5" />
             <div>
               {option.label},
               <span className="text-neutral-500 ml-1">{option.region}</span>

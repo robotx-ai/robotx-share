@@ -2,8 +2,8 @@
 
 ## Product Identity
 - Primary brand/domain: `robotxshare.com` (robot service rental bookings).
-- Secondary domain: `robotxstore.com` (robot sales commerce).
-- `robotxstore.com` is CTA cross-link only in MVP; no shared checkout/cart/auth integration.
+- Secondary domain: `robotxshop.com` (robot sales commerce).
+- `robotxshop.com` is CTA cross-link only in MVP; no shared checkout/cart/auth integration.
 - Do not present this product as Airbnb, home rental, or property rental.
 
 ## Canonical Service Taxonomy
@@ -79,7 +79,7 @@ Hard rule:
 ## Routing and UX Rules
 - Keep existing route skeleton in MVP (for example `/`, `/listings/[listingId]`, `/api/listings`, `/api/reservations`).
 - Rebrand labels/copy first; defer route renaming.
-- Ensure visible cross-link CTA to `robotxstore.com` in navbar and footer.
+- Ensure visible cross-link CTA to `robotxshop.com` in navbar and footer.
 - Keep location/date filtering flow, but wording must describe service booking.
 
 ## Theme Color Policy (MVP)
@@ -98,7 +98,7 @@ Hard rule:
 - Manual smoke checklist completed (home browse, detail, booking flow, auth flow, favorites/trips/reservations pages).
 
 ## Out of Scope (MVP)
-- Unified auth/cart between `robotxshare.com` and `robotxstore.com`.
+- Unified auth/cart between `robotxshare.com` and `robotxshop.com`.
 - Hourly/time-slot scheduling.
 - Multi-provider marketplace model.
 - DB schema migration for service-specific fields.

@@ -7,27 +7,28 @@ import {
   FaUtensils,
 } from "react-icons/fa";
 import { MdOutlineCleaningServices } from "react-icons/md";
+import { ROBOTX_SERVICE_CATEGORIES } from "@/lib/robotxServiceCategories";
 import CategoryBox from "../CategoryBox";
 import Container from "../Container";
 
 export const categories = [
   {
-    label: "Showcase & Performance",
+    label: ROBOTX_SERVICE_CATEGORIES[0],
     icon: FaRobot,
     description: "Robots for demos, events, and live performance experiences.",
   },
   {
-    label: "Cleaning",
+    label: ROBOTX_SERVICE_CATEGORIES[1],
     icon: MdOutlineCleaningServices,
     description: "Autonomous and operator-assisted cleaning service packages.",
   },
   {
-    label: "Warehouse",
+    label: ROBOTX_SERVICE_CATEGORIES[2],
     icon: FaWarehouse,
     description: "Automation support for warehouse operations and workflows.",
   },
   {
-    label: "Restaurant",
+    label: ROBOTX_SERVICE_CATEGORIES[3],
     icon: FaUtensils,
     description: "Service robots for restaurant operations and customer service.",
   },

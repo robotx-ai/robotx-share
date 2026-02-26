@@ -36,7 +36,7 @@ function Footer({}: Props) {
     ],
     [
       "RobotX Store",
-      "Shop at robotxstore.com",
+      "Shop at robotxshop.com",
       "Robot accessories",
       "Maintenance plans",
       "Enterprise sales",
@@ -63,12 +63,12 @@ function Footer({}: Props) {
         <div className="flex flex-col gap-1 text-sm">
           <p>{country}</p>
           <a
-            href="https://robotxstore.com"
+            href="https://robotxshop.com"
             target="_blank"
             rel="noreferrer"
             className="font-semibold text-gray-800 underline"
           >
-            Visit robotxstore.com
+            Visit robotxshop.com
           </a>
         </div>
       </div>

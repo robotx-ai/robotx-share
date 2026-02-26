@@ -9,6 +9,15 @@ type Props = {
 };
 
 function Avatar({ src, userName }: Props) {
+  const initials =
+    userName
+      ?.trim()
+      .split(/\s+/)
+      .map((part) => part[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase() || "RX";
+
   return (
     <div>
       {src ? (
@@ -16,21 +25,19 @@ function Avatar({ src, userName }: Props) {
           className="rounded-full"
           height="30"
           width="30"
-          alt="hasImag"
+          alt="User avatar"
           src={src}
         />
       ) : userName ? (
-        <img
-          className="rounded-full h-[30px] w-[30px]"
-          alt="nameImage"
-          src={`https://ui-avatars.com/api/?name=${userName}`}
-        />
+        <div className="rounded-full h-[30px] w-[30px] bg-robotx text-white text-xs font-semibold flex items-center justify-center">
+          {initials}
+        </div>
       ) : (
         <Image
           className="rounded-full"
           height="30"
           width="30"
-          alt="noUser"
+          alt="Default avatar"
           src="/assets/avatar.png"
         />
       )}

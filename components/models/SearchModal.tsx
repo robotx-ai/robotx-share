@@ -7,31 +7,35 @@ import { useRouter, useSearchParams } from "next/navigation";
 import qs from "query-string";
 import { useCallback, useMemo, useState } from "react";
 import { Range } from "react-date-range";
+import {
+  DEFAULT_SERVICE_AREA_VALUE,
+  getServiceAreaByValue,
+  SERVICE_AREAS,
+} from "@/lib/serviceLocation";
 
 import Heading from "../Heading";
 import Calendar from "../inputs/Calendar";
-import Counter from "../inputs/Counter";
 import CountrySelect, { CountrySelectValue } from "../inputs/CountrySelect";
 import Modal from "./Modal";
 
 enum STEPS {
   LOCATION = 0,
   DATE = 1,
-  INFO = 2,
 }
 
 type Props = {};
 
 function SearchModal({}: Props) {
+  const defaultServiceArea =
+    getServiceAreaByValue(DEFAULT_SERVICE_AREA_VALUE) || SERVICE_AREAS[0];
   const router = useRouter();
   const params = useSearchParams();
   const searchModel = useSearchModal();
 
-  const [location, setLocation] = useState<CountrySelectValue>();
+  const [location, setLocation] = useState<CountrySelectValue | undefined>(
+    defaultServiceArea
+  );
   const [step, setStep] = useState(STEPS.LOCATION);
-  const [guestCount, setGuestCount] = useState(1);
-  const [roomCount, setRoomCount] = useState(1);
-  const [bathroomCount, setBathroomCount] = useState(1);
   const [dateRange, setDateRange] = useState<Range>({
     startDate: new Date(),
     endDate: new Date(),
@@ -43,19 +47,19 @@ function SearchModal({}: Props) {
       dynamic(() => import("../Map"), {
         ssr: false,
       }),
-    [location]
+    []
   );
 
-  const onBack = () => {
+  const onBack = useCallback(() => {
     setStep((value) => value - 1);
-  };
+  }, []);
 
-  const onNext = () => {
+  const onNext = useCallback(() => {
     setStep((value) => value + 1);
-  };
+  }, []);
 
-  const onSubmit = useCallback(async () => {
-    if (step !== STEPS.INFO) {
+  const onSubmit = useCallback(() => {
+    if (step !== STEPS.DATE) {
       return onNext();
     }
 
@@ -68,10 +72,11 @@ function SearchModal({}: Props) {
     const updatedQuery: any = {
       ...currentQuery,
       locationValue: location?.value,
-      guestCount,
-      roomCount,
-      bathroomCount,
     };
+
+    delete updatedQuery.guestCount;
+    delete updatedQuery.roomCount;
+    delete updatedQuery.bathroomCount;
 
     if (dateRange.startDate) {
       updatedQuery.startDate = formatISO(dateRange.startDate);
@@ -96,18 +101,15 @@ function SearchModal({}: Props) {
   }, [
     step,
     searchModel,
-    location,
     router,
-    guestCount,
-    roomCount,
-    bathroomCount,
+    location?.value,
     dateRange,
     onNext,
     params,
   ]);
 
   const actionLabel = useMemo(() => {
-    if (step === STEPS.INFO) {
+    if (step === STEPS.DATE) {
       return "Find Services";
     }
 
@@ -133,7 +135,11 @@ function SearchModal({}: Props) {
         onChange={(value) => setLocation(value as CountrySelectValue)}
       />
       <hr />
-      <Map center={location?.latlng} />
+      <Map
+        center={location?.latlng ?? defaultServiceArea.latlng}
+        locationValue={location?.value ?? defaultServiceArea.value}
+        flagCode={location?.flag ?? "US"}
+      />
     </div>
   );
 
@@ -147,39 +153,6 @@ function SearchModal({}: Props) {
         <Calendar
           onChange={(value) => setDateRange(value.selection)}
           value={dateRange}
-        />
-      </div>
-    );
-  }
-
-  if (step === STEPS.INFO) {
-    bodyContent = (
-      <div className="flex flex-col gap-8">
-        <Heading
-          title="Service requirements"
-          subtitle="Tell us the scale of deployment."
-        />
-        <Counter
-          onChange={(value) => setGuestCount(value)}
-          value={guestCount}
-          title="Customers"
-          subtitle="How many customers should this booking support?"
-        />
-        <hr />
-        <Counter
-          onChange={(value) => setRoomCount(value)}
-          value={roomCount}
-          title="Service Units"
-          subtitle="How many robot units do you need?"
-        />
-        <hr />
-        <Counter
-          onChange={(value) => {
-            setBathroomCount(value);
-          }}
-          value={bathroomCount}
-          title="Coverage Zones"
-          subtitle="How many areas should the service cover?"
         />
       </div>
     );

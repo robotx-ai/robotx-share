@@ -16,7 +16,7 @@ function Logo({}: Props) {
         className="hidden md:block cursor-pointer"
         height="100"
         width="100"
-        src="/assets/logo.png"
+        src="/assets/robotx_logo.webp"
       />
     </div>
   );

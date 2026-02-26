@@ -6,6 +6,7 @@ import RegisterModal from "@/components/models/RegisterModal";
 import RentModal from "@/components/models/RentModal";
 import SearchModal from "@/components/models/SearchModal";
 import Navbar from "@/components/navbar/Navbar";
+import { isRobotxAdminEmail } from "@/lib/robotxAdmin";
 import { Nunito } from "next/font/google";
 import "../styles/globals.css";
 import getCurrentUser from "./actions/getCurrentUser";
@@ -13,7 +14,7 @@ import getCurrentUser from "./actions/getCurrentUser";
 export const metadata = {
   title: "RobotX Share",
   description: "Robot service rental marketplace by RobotX",
-  icons: "/assets/logo.png",
+  icons: "/assets/robotx_logo.webp",
 };
 
 const font = Nunito({
@@ -26,6 +27,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const currentUser = await getCurrentUser();
+  const isAdmin = isRobotxAdminEmail(currentUser?.email);
 
   return (
     <html lang="en">
@@ -35,8 +37,8 @@ export default async function RootLayout({
           <SearchModal />
           <RegisterModal />
           <LoginModal />
-          <RentModal />
-          <Navbar currentUser={currentUser} />
+          {isAdmin && <RentModal />}
+          <Navbar currentUser={currentUser} isAdmin={isAdmin} />
         </ClientOnly>
         <div className="pb-20 pt-28">{children}</div>
         <Footer />

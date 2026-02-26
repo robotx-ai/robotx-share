@@ -19,7 +19,7 @@ function ImageUpload({ onChange, value }: Props) {
     (result: any) => {
       onChange(result.info.secure_url);
     },
-    [onchange]
+    [onChange]
   );
 
   return (
@@ -41,7 +41,7 @@ function ImageUpload({ onChange, value }: Props) {
             {value && (
               <div className=" absolute inset-0 w-full h-full">
                 <Image
-                  alt="uploade"
+                  alt="Uploaded service"
                   fill
                   style={{ objectFit: "cover" }}
                   src={value}

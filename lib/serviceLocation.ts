@@ -1,0 +1,78 @@
+export type ServiceAreaOption = {
+  value: string;
+  label: string;
+  flag: string;
+  latlng: [number, number];
+  region: string;
+};
+
+export const SOUTHERN_CALIFORNIA_LABEL = "Southern California";
+export const DEFAULT_SERVICE_AREA_VALUE = "los-angeles";
+
+export const SERVICE_AREAS: ServiceAreaOption[] = [
+  {
+    value: "los-angeles",
+    label: "Los Angeles",
+    flag: "US",
+    latlng: [34.0522, -118.2437],
+    region: SOUTHERN_CALIFORNIA_LABEL,
+  },
+  {
+    value: "orange-county",
+    label: "Orange County",
+    flag: "US",
+    latlng: [33.7175, -117.8311],
+    region: SOUTHERN_CALIFORNIA_LABEL,
+  },
+  {
+    value: "san-diego",
+    label: "San Diego",
+    flag: "US",
+    latlng: [32.7157, -117.1611],
+    region: SOUTHERN_CALIFORNIA_LABEL,
+  },
+  {
+    value: "san-bernardino",
+    label: "San Bernardino",
+    flag: "US",
+    latlng: [34.1083, -117.2898],
+    region: SOUTHERN_CALIFORNIA_LABEL,
+  },
+  {
+    value: "riverside",
+    label: "Riverside",
+    flag: "US",
+    latlng: [33.9533, -117.3961],
+    region: SOUTHERN_CALIFORNIA_LABEL,
+  },
+  {
+    value: "ventura-county",
+    label: "Ventura County",
+    flag: "US",
+    latlng: [34.3705, -119.1391],
+    region: SOUTHERN_CALIFORNIA_LABEL,
+  },
+  {
+    value: "imperial-county",
+    label: "Imperial County",
+    flag: "US",
+    latlng: [32.8475, -115.5720],
+    region: SOUTHERN_CALIFORNIA_LABEL,
+  },
+];
+
+const SERVICE_AREA_VALUES = new Set(SERVICE_AREAS.map((area) => area.value));
+
+export const getServiceAreaByValue = (
+  value: string
+): ServiceAreaOption | undefined => {
+  return SERVICE_AREAS.find((area) => area.value === value);
+};
+
+export const isServiceAreaValue = (value: string): boolean => {
+  return SERVICE_AREA_VALUES.has(value);
+};
+
+export const getServiceAreaValues = (): string[] => {
+  return Array.from(SERVICE_AREA_VALUES);
+};

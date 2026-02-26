@@ -1,6 +1,9 @@
 "use client";
 
-import useCountries from "@/hook/useCountries";
+import {
+  getServiceAreaByValue,
+  SOUTHERN_CALIFORNIA_LABEL,
+} from "@/lib/serviceLocation";
 import useSearchModal from "@/hook/useSearchModal";
 import { differenceInDays } from "date-fns";
 import { useSearchParams } from "next/navigation";
@@ -12,20 +15,21 @@ type Props = {};
 function Search({}: Props) {
   const searchModel = useSearchModal();
   const params = useSearchParams();
-  const { getByValue } = useCountries();
 
   const locationValue = params?.get("locationValue");
   const startDate = params?.get("startDate");
   const endDate = params?.get("endDate");
-  const guestCount = params?.get("guestCount");
 
   const locationLabel = useMemo(() => {
     if (locationValue) {
-      return getByValue(locationValue as string)?.label;
+      return (
+        getServiceAreaByValue(locationValue as string)?.label ||
+        SOUTHERN_CALIFORNIA_LABEL
+      );
     }
 
-    return "Service Area";
-  }, [getByValue, locationValue]);
+    return SOUTHERN_CALIFORNIA_LABEL;
+  }, [locationValue]);
 
   const durationLabel = useMemo(() => {
     if (startDate && endDate) {
@@ -43,14 +47,6 @@ function Search({}: Props) {
     return "Any Dates";
   }, [startDate, endDate]);
 
-  const customerLabel = useMemo(() => {
-    if (guestCount) {
-      return `${guestCount} Customers`;
-    }
-
-    return "Add Customers";
-  }, [guestCount]);
-
   return (
     <div
       onClick={searchModel.onOpen}
@@ -61,8 +57,7 @@ function Search({}: Props) {
         <div className="hidden sm:block text-losm font-semibold px-6 border-x-[1px] flex-1 text-center">
           {durationLabel}
         </div>
-        <div className="text-sm pl-6 pr-2 text-gray-600 flex flex-row items-center gap-3">
-          <div className="hidden sm:block text-center">{customerLabel}</div>
+        <div className="text-sm px-2 text-gray-600 flex flex-row items-center">
           <div className="p-2 bg-robotx rounded-full text-white">
             <BiSearch size={18} />
           </div>
