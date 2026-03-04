@@ -1,0 +1,106 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project Identity
+
+**RobotX Share** (`robotxshare.com`) is a robot service rental booking platform — not a home/property rental site. It was originally an Airbnb clone and is being migrated to the RobotX brand. The `AGENTS.md` file contains the authoritative product and terminology rules; always consult it for any user-facing copy decisions.
+
+A secondary commerce domain, `robotxshop.com`, exists as a CTA cross-link only — there is no shared auth/cart between the two.
+
+## Commands
+
+```bash
+npm run dev          # Start dev server on http://localhost:3000
+npm run build        # Production build
+npm run lint         # ESLint check (must pass before any PR/merge)
+
+# One-time Supabase migration utilities
+npm run db:migrate:sql     # Generate migration SQL from Prisma schema
+npm run db:migrate:data    # Copy data from MongoDB to Postgres
+npm run db:migrate:verify  # Verify migration integrity
+```
+
+## Architecture
+
+**Framework**: Next.js 13 (App Router + Pages Router hybrid)
+- `app/` — React Server Components (App Router): layout, page routes, server actions
+- `pages/api/` — API routes (Pages Router): currently only `auth/[...nextauth].ts`
+- The main CRUD API endpoints (listings, reservations, favorites, register) appear to live in the `app/` directory or are legacy routes
+
+**Key directories**:
+- `app/actions/` — Server-side data fetchers: `getListings`, `getListingById`, `getReservations`, `getFavoriteListings`, `getCurrentUser`
+- `app/listings/[listingId]/` — Service detail page
+- `app/services/` — Browse/filter services catalog
+- `app/trips/`, `app/reservations/`, `app/favorites/`, `app/properties/` — Authenticated user pages (protected by `middleware.ts`)
+- `components/models/` — Modal dialogs: Login, Register, RentModal (admin-only: create service), Search
+- `components/navbar/` — Navbar with Categories filter, Search, UserMenu
+- `components/listing/` — Service card and detail sub-components
+- `lib/` — Shared utilities: `robotxAdmin.ts` (admin check), `robotxServiceCategories.ts` (category constants), `writeGuard.ts` (migration read-only lock), `prismadb.ts` (Prisma singleton)
+- `hook/` — Zustand modal stores and utility hooks
+
+**Database**: Supabase Postgres via Prisma (migrated from MongoDB). Schema in `prisma/schema.prisma`. Models: `User`, `Account`, `Listing`, `Reservation`, `UserFavorite`.
+
+**Auth**: NextAuth with Google + Facebook providers, Prisma adapter. Admin access gated by `ROBOTX_ADMIN_EMAILS` env var (comma-separated email allowlist).
+
+## Mandatory Terminology (User-Facing Copy)
+
+| Use | Avoid |
+|-----|-------|
+| service | listing |
+| booking | reservation |
+| customer | guest |
+| service package / deployment | home / place / property |
+| per day | per night |
+| RobotX Service Assurance | AirCover |
+| RobotX / service operator | host |
+
+**Banned in new copy**: Airbnb, host, guest, property, per night, AirCover.
+
+Internal variable names and route paths may keep legacy names during MVP for compatibility.
+
+## Service Categories (Canonical — Do Not Add More Without Explicit Request)
+
+- `Showcase & Performance` (slug: `showcase-performance`)
+- `Cleaning` (slug: `cleaning`)
+- `Warehouse` (slug: `warehouse`)
+- `Restaurant` (slug: `restaurant`)
+
+Source of truth: `lib/robotxServiceCategories.ts`
+
+## Access Control
+
+- Service catalog is RobotX-managed only. Non-admin users must not create/edit/delete services.
+- Admin check: `isRobotxAdminEmail()` from `lib/robotxAdmin.ts` — reads `ROBOTX_ADMIN_EMAILS` env var.
+- Enforce at API layer regardless of UI visibility. `RentModal` (create service) is only mounted for admins in `app/layout.tsx`.
+
+## Theme Colors (MVP Constraint)
+
+User-facing UI must use only **white, gray, and black**. Replace any legacy rose/coral/indigo/blue accent colors with neutral grayscale Tailwind classes. Prefer updating centralized Tailwind tokens over scattered hardcoded values.
+
+## MVP Guardrails
+
+- Do not redesign the Prisma schema during the MVP rebrand phase.
+- Keep existing route shapes (`/listings/[listingId]`, `/api/listings`, `/api/reservations`, etc.).
+- `Listing.category` → one of the 4 RobotX service categories.
+- `Listing.price` → per-day service price.
+- `locationValue` → service coverage city/region.
+- `guestCount`, `roomCount`, `bathroomCount` are legacy compatibility fields; do not repurpose in MVP.
+- `DB_MIGRATION_READ_ONLY=true` env var will block all write API routes via `lib/writeGuard.ts`.
+
+## Environment Variables
+
+Copy `.env.example` to `.env` and fill in values. Key vars:
+- `DATABASE_URL` — Supabase Postgres connection string
+- `ROBOTX_ADMIN_EMAILS` — comma-separated admin email allowlist
+- `NEXTAUTH_SECRET`, `NEXTAUTH_URL` — NextAuth config
+- `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` — image uploads
+- `SUPABASE_*` — for Supabase CLI operations and migration scripts
+- `MONGODB_MIGRATION_URI`, `MONGODB_MIGRATION_DB` — one-time migration source (legacy)
+- `DB_MIGRATION_READ_ONLY` — set to `"true"` during cutover to block writes
+
+## RobotX Rebrand Migration Skill
+
+Use the `/robotx-rebrand-migration` skill for any task involving: terminology cleanup, category filter updates, theme color normalization, admin-write enforcement, or Supabase operations. It has a structured workflow with validation scripts in `scripts/` and reference docs in `.claude/skills/robotx-rebrand-migration/references/`.
+
+Definition of done for rebrand tasks: all Airbnb wording removed, 4-category filters working, non-admin blocked from mutations, white/gray/black-only theme, `npm run lint` and `npm run build` both pass.

@@ -4,10 +4,15 @@ const nextConfig = {
     appDir: true,
   },
   images: {
-    domains: [
-      "lh3.googleusercontent.com",
-      "res.cloudinary.com",
-      "images.unsplash.com",
+    remotePatterns: [
+      { protocol: "https", hostname: "lh3.googleusercontent.com" },
+      { protocol: "https", hostname: "res.cloudinary.com" },
+      { protocol: "https", hostname: "images.unsplash.com" },
+      {
+        protocol: "https",
+        hostname: "*.supabase.co",
+        pathname: "/storage/v1/object/public/**",
+      },
     ],
   },
 };
