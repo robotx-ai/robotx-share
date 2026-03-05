@@ -1,10 +1,16 @@
 import prisma from "@/lib/prismadb";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import bcrypt from "bcrypt";
-import NextAuth, { AuthOptions } from "next-auth";
+import bcrypt from "bcryptjs";
+import NextAuth, { AuthOptions, DefaultSession } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 // import FacebookProvider from "next-auth/providers/facebook";
 // import GoogleProvider from "next-auth/providers/google";
+
+declare module "next-auth" {
+  interface Session {
+    user: { userType?: string } & DefaultSession["user"];
+  }
+}
 
 export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -51,6 +57,16 @@ export const authOptions: AuthOptions = {
   ],
   pages: {
     signIn: "/",
+  },
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) token.userType = (user as any).userType;
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) session.user.userType = token.userType as string | undefined;
+      return session;
+    },
   },
   debug: process.env.NEXTAUTH_DEBUG === "true",
   session: {

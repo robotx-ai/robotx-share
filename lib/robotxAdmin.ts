@@ -1,3 +1,5 @@
+import { SafeUser } from "@/types";
+
 function getAdminEmailAllowlist() {
   return (process.env.ROBOTX_ADMIN_EMAILS ?? "")
     .split(",")
@@ -15,4 +17,9 @@ export function isRobotxAdminEmail(email: string | null | undefined) {
   }
 
   return getAdminEmailAllowlist().includes(email.toLowerCase());
+}
+
+export function canManageServices(user: SafeUser | null | undefined): boolean {
+  if (!user) return false;
+  return user.userType === "PROVIDER" || isRobotxAdminEmail(user.email);
 }

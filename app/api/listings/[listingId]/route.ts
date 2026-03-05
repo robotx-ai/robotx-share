@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import prisma from "@/lib/prismadb";
-import { hasRobotxAdminConfig, isRobotxAdminEmail } from "@/lib/robotxAdmin";
+import { canManageServices } from "@/lib/robotxAdmin";
 import { getWritesBlockedResponse } from "@/lib/writeGuard";
 
 interface IParams {
@@ -21,16 +21,9 @@ export async function DELETE(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  if (!hasRobotxAdminConfig()) {
+  if (!canManageServices(currentUser)) {
     return NextResponse.json(
-      { error: "ROBOTX_ADMIN_EMAILS is not configured." },
-      { status: 500 }
-    );
-  }
-
-  if (!isRobotxAdminEmail(currentUser.email)) {
-    return NextResponse.json(
-      { error: "Forbidden: admin access required." },
+      { error: "Forbidden: service provider access required." },
       { status: 403 }
     );
   }

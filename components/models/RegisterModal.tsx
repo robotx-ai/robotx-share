@@ -5,62 +5,115 @@ import useRegisterModal from "@/hook/useRegisterModal";
 import axios from "axios";
 import { useCallback, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import { AiFillFacebook } from "react-icons/ai";
-import { FcGoogle } from "react-icons/fc";
 import { toast } from "react-toastify";
+import { TbRobot } from "react-icons/tb";
+import { MdOutlineStorefront } from "react-icons/md";
 
-import { signIn } from "next-auth/react";
 import Button from "../Button";
 import Heading from "../Heading";
 import Input from "../inputs/Input";
 import Modal from "./Modal";
 
-type Props = {};
+type UserType = "CUSTOMER" | "PROVIDER";
 
-function RegisterModal({}: Props) {
+function RegisterModal() {
   const registerModel = useRegisterModal();
   const loginModel = useLoginModel();
   const [isLoading, setIsLoading] = useState(false);
+  const [step, setStep] = useState<1 | 2>(1);
+  const [userType, setUserType] = useState<UserType | null>(null);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<FieldValues>({
     defaultValues: {
       name: "",
       email: "",
       password: "",
+      phone: "",
+      businessName: "",
     },
   });
 
+  const handleClose = useCallback(() => {
+    setStep(1);
+    setUserType(null);
+    reset();
+    registerModel.onClose();
+  }, [registerModel, reset]);
+
+  const handleSelectType = useCallback((type: UserType) => {
+    setUserType(type);
+    setStep(2);
+  }, []);
+
+  const handleBack = useCallback(() => {
+    setStep(1);
+    setUserType(null);
+  }, []);
+
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
+    if (!userType) return;
     setIsLoading(true);
 
     axios
-      .post("/api/register", data)
+      .post("/api/register", { ...data, userType })
       .then(() => {
-        toast.success("Success!");
+        toast.success("Account created! Please log in.");
         loginModel.onOpen();
-        registerModel.onClose();
+        handleClose();
       })
-      .catch((err: any) => toast.error("Something Went Wrong"))
-      .finally(() => {
-        setIsLoading(false);
-        toast.success("Register Successfully");
-      });
+      .catch(() => toast.error("Something went wrong."))
+      .finally(() => setIsLoading(false));
   };
 
   const toggle = useCallback(() => {
     loginModel.onOpen();
-    registerModel.onClose();
-  }, [loginModel, registerModel]);
+    handleClose();
+  }, [loginModel, handleClose]);
 
-  const bodyContent = (
-    <div className="flex flex-col gap-4">
+  const step1Body = (
+    <div className="flex flex-col gap-6">
       <Heading
         title="Welcome to RobotX Share"
-        subtitle="Create an Account!"
+        subtitle="How would you like to use RobotX Share?"
+        center
+      />
+      <div className="grid grid-cols-2 gap-4">
+        <button
+          type="button"
+          onClick={() => handleSelectType("CUSTOMER")}
+          className="flex flex-col items-center gap-3 p-6 border-2 border-neutral-200 rounded-xl hover:border-black transition cursor-pointer text-center"
+        >
+          <TbRobot size={36} className="text-neutral-700" />
+          <span className="font-semibold text-neutral-800">Rent a Robot</span>
+          <span className="text-sm text-neutral-500 font-light">
+            Find and book robot services for your needs
+          </span>
+        </button>
+        <button
+          type="button"
+          onClick={() => handleSelectType("PROVIDER")}
+          className="flex flex-col items-center gap-3 p-6 border-2 border-neutral-200 rounded-xl hover:border-black transition cursor-pointer text-center"
+        >
+          <MdOutlineStorefront size={36} className="text-neutral-700" />
+          <span className="font-semibold text-neutral-800">List my Robot</span>
+          <span className="text-sm text-neutral-500 font-light">
+            Offer your robot services to customers
+          </span>
+        </button>
+      </div>
+    </div>
+  );
+
+  const step2Body = (
+    <div className="flex flex-col gap-4">
+      <Heading
+        title={userType === "PROVIDER" ? "Create a provider account" : "Create an account"}
+        subtitle={userType === "PROVIDER" ? "List your robot services on RobotX Share" : "Book robot services with RobotX Share"}
         center
       />
       <Input
@@ -82,53 +135,73 @@ function RegisterModal({}: Props) {
       <Input
         id="password"
         label="Password"
+        type="password"
         disabled={isLoading}
         register={register}
         errors={errors}
         required
       />
+      {userType === "PROVIDER" && (
+        <>
+          <Input
+            id="phone"
+            label="Phone Number (optional)"
+            disabled={isLoading}
+            register={register}
+            errors={errors}
+          />
+          <Input
+            id="businessName"
+            label="Business Name (optional)"
+            disabled={isLoading}
+            register={register}
+            errors={errors}
+          />
+        </>
+      )}
     </div>
   );
 
   const footerContent = (
     <div className="flex flex-col gap-4 mt-3">
       <hr />
-      {/* <Button
-        outline
-        label="Continue with Google"
-        icon={FcGoogle}
-        onClick={() => signIn("google")}
-      />
-      <Button
-        outline
-        label="Continue with Facebook"
-        icon={AiFillFacebook}
-        onClick={() => signIn("facebook")}
-        isColor
-      /> */}
       <div className="text-neutral-500 text-center mt-4 font-light">
-        <div>
-          Already have an account?{" "}
-          <span
-            onClick={toggle}
-            className="text-neutral-800 cursor-pointer hover:underline"
-          >
-            Log in
-          </span>
-        </div>
+        Already have an account?{" "}
+        <span
+          onClick={toggle}
+          className="text-neutral-800 cursor-pointer hover:underline"
+        >
+          Log in
+        </span>
       </div>
     </div>
   );
+
+  if (step === 1) {
+    return (
+      <Modal
+        isOpen={registerModel.isOpen}
+        title="Sign Up"
+        actionLabel=""
+        onClose={handleClose}
+        onSubmit={() => {}}
+        body={step1Body}
+        footer={footerContent}
+      />
+    );
+  }
 
   return (
     <Modal
       disabled={isLoading}
       isOpen={registerModel.isOpen}
-      title="Register"
-      actionLabel="Continue"
-      onClose={registerModel.onClose}
+      title="Sign Up"
+      actionLabel="Create Account"
+      secondaryActionLabel="Back"
+      secondaryAction={handleBack}
+      onClose={handleClose}
       onSubmit={handleSubmit(onSubmit)}
-      body={bodyContent}
+      body={step2Body}
       footer={footerContent}
     />
   );

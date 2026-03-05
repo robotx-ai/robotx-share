@@ -73,44 +73,44 @@ function UserMenu({ currentUser, isAdmin = false }: Props) {
         </div>
       </div>
       {isOpen && (
-        <div className="absolute rounded-xl shadow-md w-[40vw] md:w-3/4 bg-white overflow-hidden right-0 top-12 text-sm">
+        <div className="absolute rounded-xl shadow-md w-[200px] bg-white overflow-hidden right-0 top-12 text-sm">
           <div className="flex flex-col cursor-pointer">
             {currentUser ? (
               <>
                 <MenuItem
-                  onClick={() => router.push("/trips")}
+                  onClick={() => { setIsOpen(false); router.push("/trips"); }}
                   label="My scheduled services"
                 />
                 <MenuItem
-                  onClick={() => router.push("/favorites")}
+                  onClick={() => { setIsOpen(false); router.push("/favorites"); }}
                   label="Saved services"
                 />
                 <MenuItem
-                  onClick={() => router.push("/reservations")}
+                  onClick={() => { setIsOpen(false); router.push("/reservations"); }}
                   label="Service bookings"
                 />
                 {isAdmin && (
                   <MenuItem
-                    onClick={() => router.push("/properties")}
+                    onClick={() => { setIsOpen(false); router.push("/properties"); }}
                     label="My services"
                   />
                 )}
-                {isAdmin && <MenuItem onClick={onRent} label="List a service" />}
+                {isAdmin && <MenuItem onClick={() => { setIsOpen(false); onRent(); }} label="List a service" />}
                 <MenuItem
-                  onClick={() => window.open("https://robotxshop.com", "_blank")}
+                  onClick={() => { setIsOpen(false); window.open("https://robotxshop.com", "_blank"); }}
                   label="Visit robotxshop.com"
                 />
                 <hr />
-                <MenuItem onClick={() => signOut()} label="Logout" />
+                <MenuItem onClick={() => { setIsOpen(false); signOut(); }} label="Logout" />
               </>
             ) : (
               <>
                 <MenuItem
-                  onClick={() => window.open("https://robotxshop.com", "_blank")}
+                  onClick={() => { setIsOpen(false); window.open("https://robotxshop.com", "_blank"); }}
                   label="Visit robotxshop.com"
                 />
-                <MenuItem onClick={loginModel.onOpen} label="Login" />
-                <MenuItem onClick={registerModel.onOpen} label="Sign up" />
+                <MenuItem onClick={() => { setIsOpen(false); registerModel.onClose(); loginModel.onOpen(); }} label="Login" />
+                <MenuItem onClick={() => { setIsOpen(false); loginModel.onClose(); registerModel.onOpen(); }} label="Sign up" />
               </>
             )}
           </div>

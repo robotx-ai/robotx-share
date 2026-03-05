@@ -11,6 +11,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserType {
+  CUSTOMER
+  PROVIDER
+}
+
 model User {
   id               String         @id @default(cuid())
   name             String?
@@ -20,6 +25,9 @@ model User {
   hashedPassword   String?
   createdAt        DateTime       @default(now())
   updatedAt        DateTime       @updatedAt
+  userType         UserType       @default(CUSTOMER)
+  phone            String?
+  businessName     String?
   accounts         Account[]
   listings         Listing[]
   reservations     Reservation[]

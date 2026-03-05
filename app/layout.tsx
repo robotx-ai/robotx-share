@@ -6,7 +6,7 @@ import RegisterModal from "@/components/models/RegisterModal";
 import RentModal from "@/components/models/RentModal";
 import SearchModal from "@/components/models/SearchModal";
 import Navbar from "@/components/navbar/Navbar";
-import { isRobotxAdminEmail } from "@/lib/robotxAdmin";
+import { canManageServices } from "@/lib/robotxAdmin";
 import { Nunito } from "next/font/google";
 import "../styles/globals.css";
 import getCurrentUser from "./actions/getCurrentUser";
@@ -27,7 +27,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const currentUser = await getCurrentUser();
-  const isAdmin = isRobotxAdminEmail(currentUser?.email);
+  const isAdmin = canManageServices(currentUser);
 
   return (
     <html lang="en">

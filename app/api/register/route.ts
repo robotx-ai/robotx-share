@@ -1,6 +1,6 @@
 import prisma from "@/lib/prismadb";
 import { getWritesBlockedResponse } from "@/lib/writeGuard";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
@@ -8,7 +8,11 @@ export async function POST(request: Request) {
   if (writesBlocked) return writesBlocked;
 
   const body = await request.json();
-  const { email, name, password } = body;
+  const { email, name, password, userType, phone, businessName } = body;
+
+  if (userType !== "CUSTOMER" && userType !== "PROVIDER") {
+    return NextResponse.json({ error: "Invalid user type." }, { status: 400 });
+  }
 
   const hashedPassword = await bcrypt.hash(password, 12);
 
@@ -17,6 +21,9 @@ export async function POST(request: Request) {
       email,
       name,
       hashedPassword,
+      userType,
+      ...(phone ? { phone } : {}),
+      ...(businessName ? { businessName } : {}),
     },
   });
 
