@@ -18,7 +18,7 @@ for f in "$CATEGORIES_FILE" "$CONSTANTS_FILE" "$SCHEMA_FILE"; do
   fi
 done
 
-EXPECTED=$'Showcase & Performance\nCleaning\nWarehouse\nRestaurant'
+EXPECTED=$'Showcase & Performance\nWarehouse\nRestaurant'
 
 # Extract canonical labels from the constants file (the source of truth)
 ACTUAL="$(rg --no-filename -o '"[^"]+"' "$CONSTANTS_FILE" | sed 's/"//g' | head -n 4 || true)"

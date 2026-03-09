@@ -9,12 +9,10 @@
 ## Canonical Service Taxonomy
 - Allowed service categories (exact labels):
   - `Showcase & Performance`
-  - `Cleaning`
   - `Warehouse`
   - `Restaurant`
 - Canonical slugs:
   - `showcase-performance`
-  - `cleaning`
   - `warehouse`
   - `restaurant`
 - No additional categories without explicit product request.
@@ -39,7 +37,7 @@ Hard rule:
 - No Prisma schema redesign in MVP rebrand phase.
 - Keep existing route shapes and DB fields for compatibility.
 - Reinterpret semantics in-place:
-  - `Listing.category` must be one of the 4 RobotX services.
+  - `Listing.category` must be one of the 3 RobotX services.
   - `Listing.price` means per-day service price.
   - `locationValue` means service coverage city/region.
 - Existing fields `guestCount`, `roomCount`, and `bathroomCount` are legacy compatibility fields.
@@ -90,7 +88,7 @@ Hard rule:
 
 ## Definition of Done for Rebrand Tasks
 - All visible Airbnb wording removed.
-- Category filters show exactly 4 RobotX services.
+- Category filters show exactly 3 RobotX services.
 - Non-admin cannot access create/edit/delete service flows.
 - Theme colors use only white/gray/black across user-facing UI in MVP scope.
 - `npm run lint` passes.

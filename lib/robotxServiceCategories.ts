@@ -1,6 +1,5 @@
 export const ROBOTX_SERVICE_CATEGORIES = [
   "Showcase & Performance",
-  "Cleaning",
   "Warehouse",
   "Restaurant",
 ] as const;

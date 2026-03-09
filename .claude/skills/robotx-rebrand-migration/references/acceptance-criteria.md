@@ -5,7 +5,6 @@ A migration task is complete only if all criteria below pass.
 ## 1. Taxonomy
 - Service taxonomy is constrained to exactly:
   - `Showcase & Performance`
-  - `Cleaning`
   - `Warehouse`
   - `Restaurant`
 - Category UI uses only those values.

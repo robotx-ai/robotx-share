@@ -13,10 +13,9 @@ const barlow = Barlow_Condensed({
 });
 
 const slides = [
-  { image: "/Restaurant.png", label: "Restaurant Services" },
-  { image: "/Warehouse.png", label: "Cleaning Services" },
-  { image: "/Warehouse_Delivery.png", label: "Warehouse Services" },
   { image: "/Showcase.png", label: "Performance Services" },
+  { image: "/Restaurant.png", label: "Restaurant Services" },
+  { image: "/Warehouse_Delivery.png", label: "Warehouse Services" },
 ];
 
 export default function HeroCarousel() {

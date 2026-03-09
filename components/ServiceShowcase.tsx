@@ -1,9 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import Image from "next/image";
+import { useRef, useEffect } from "react";
 import Link from "next/link";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { Barlow_Condensed } from "next/font/google";
 
 const barlow = Barlow_Condensed({
@@ -12,164 +11,205 @@ const barlow = Barlow_Condensed({
   display: "swap",
 });
 
+interface WaveConfig {
+  frequency: number;
+  amplitude: number;
+  speed: number;
+  layers: number;
+}
+
 const SERVICES = [
   {
-    key: "cleaning",
-    label: "Cleaning",
-    image: "/Warehouse.png",
-    title: "Cleaning Robots",
-    description:
-      "Autonomous floor-cleaning robots for commercial spaces. Precision-scheduled, operator-managed, zero supervision required.",
-    href: "/services?category=Cleaning",
-  },
-  {
-    key: "warehouse",
-    label: "Warehouse",
-    image: "/Warehouse_Delivery.png",
-    title: "Warehouse Automation",
-    description:
-      "Streamline logistics with autonomous picking, sorting, and delivery robots. Built for scale.",
-    href: "/services?category=Warehouse",
-  },
-  {
-    key: "restaurant",
-    label: "Restaurant",
-    image: "/Restaurant.png",
-    title: "Restaurant Service Robots",
-    description:
-      "Front-of-house delivery and back-of-house prep robots for modern dining operations.",
-    href: "/services?category=Restaurant",
-  },
-  {
     key: "showcase",
-    label: "Showcase",
-    image: "/Showcase.png",
+    overline: "SHOWCASE & PERFORMANCE",
     title: "Showcase & Performance",
     description:
       "High-impact robotic demonstrations for events, trade shows, and brand activations.",
     href: "/services?category=Showcase+%26+Performance",
+    waveConfig: { frequency: 0.006, amplitude: 70, speed: 0.017, layers: 3 },
+  },
+  {
+    key: "warehouse",
+    overline: "WAREHOUSE",
+    title: "Warehouse Automation",
+    description:
+      "Streamline logistics with autonomous picking, sorting, and delivery robots. Built for scale.",
+    href: "/services?category=Warehouse",
+    waveConfig: { frequency: 0.018, amplitude: 55, speed: 0.022, layers: 3 },
+  },
+  {
+    key: "restaurant",
+    overline: "RESTAURANT",
+    title: "Restaurant Service Robots",
+    description:
+      "Front-of-house delivery and back-of-house prep robots for modern dining operations.",
+    href: "/services?category=Restaurant",
+    waveConfig: { frequency: 0.012, amplitude: 38, speed: 0.013, layers: 3 },
   },
 ];
 
-export default function ServiceShowcase() {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const active = SERVICES[activeIndex];
+function WaveformCanvas({ config }: { config: WaveConfig }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const rafRef = useRef<number>(0);
+  const timeRef = useRef<number>(0);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const resize = () => {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+    };
+
+    resize();
+    const ro = new ResizeObserver(resize);
+    ro.observe(canvas);
+
+    const layerOpacities = [0.15, 0.09, 0.05];
+    const layerPhases = [0, Math.PI * 0.6, Math.PI * 1.2];
+    const layerAmplMult = [1, 0.65, 0.4];
+
+    const draw = () => {
+      timeRef.current += config.speed;
+      const { width, height } = canvas;
+      ctx.clearRect(0, 0, width, height);
+
+      for (let l = 0; l < config.layers; l++) {
+        ctx.beginPath();
+        ctx.strokeStyle = `rgba(255,255,255,${layerOpacities[l]})`;
+        ctx.lineWidth = l === 0 ? 2 : 1;
+
+        for (let x = 0; x <= width; x += 2) {
+          const y =
+            height / 2 +
+            Math.sin(x * config.frequency + timeRef.current + layerPhases[l]) *
+              config.amplitude *
+              layerAmplMult[l] +
+            Math.sin(
+              x * config.frequency * 2.3 +
+                timeRef.current * 1.4 +
+                layerPhases[l]
+            ) *
+              config.amplitude *
+              layerAmplMult[l] *
+              0.4;
+
+          if (x === 0) {
+            ctx.moveTo(x, y);
+          } else {
+            ctx.lineTo(x, y);
+          }
+        }
+        ctx.stroke();
+      }
+
+      rafRef.current = requestAnimationFrame(draw);
+    };
+
+    rafRef.current = requestAnimationFrame(draw);
+
+    return () => {
+      cancelAnimationFrame(rafRef.current);
+      ro.disconnect();
+    };
+  }, [config]);
 
   return (
-    <section className="relative overflow-hidden py-24">
-      {/* Ambient video background */}
-      <video
-        autoPlay
-        muted
-        loop
-        playsInline
-        className="absolute inset-0 h-full w-full object-cover"
-        aria-hidden="true"
-      >
-        <source
-          src="https://videos.pexels.com/video-files/3141208/3141208-uhd_2560_1440_30fps.mp4"
-          type="video/mp4"
-        />
-      </video>
+    <canvas
+      ref={canvasRef}
+      className="absolute inset-0 h-full w-full"
+      aria-hidden="true"
+    />
+  );
+}
 
-      {/* Dark overlay */}
+const containerVariants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.1 },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 28 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
+  },
+};
+
+function ServiceSection({
+  overline,
+  title,
+  description,
+  href,
+  waveConfig,
+}: (typeof SERVICES)[number]) {
+  return (
+    <section className="relative flex items-center overflow-hidden bg-black" style={{ minHeight: "80vh" }}>
+      <WaveformCanvas config={waveConfig} />
       <div className="absolute inset-0 bg-black/70" />
 
-      {/* Content */}
-      <div className="relative z-10 mx-auto max-w-6xl px-6 sm:px-10 lg:px-12">
-        {/* Section header */}
+      <div className="relative z-10 mx-auto w-full max-w-6xl px-6 py-20 sm:px-10 lg:px-12">
         <motion.div
-          initial={{ opacity: 0, y: 32 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="mb-14 text-center"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-10%" }}
+          className="flex max-w-xl flex-col gap-6"
         >
-          <p className="mb-2 text-sm font-semibold uppercase tracking-[0.2em] text-gray-400">
-            What We Offer
-          </p>
-          <h2
-            className={`${barlow.className} text-5xl font-extrabold uppercase text-white sm:text-6xl`}
+          <motion.p
+            variants={itemVariants}
+            className="text-xs font-semibold uppercase tracking-[0.22em] text-gray-400"
           >
-            Our Services
-          </h2>
-        </motion.div>
+            {overline}
+          </motion.p>
 
-        {/* Tabs */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.15, ease: "easeOut" }}
-          className="mb-12 flex justify-center"
-        >
-          <div className="relative flex gap-1 rounded-full border border-white/10 bg-white/5 p-1">
-            {SERVICES.map((service, i) => (
-              <button
-                key={service.key}
-                onClick={() => setActiveIndex(i)}
-                className={`relative z-10 rounded-full px-5 py-2 text-sm font-semibold transition-colors duration-200 ${
-                  i === activeIndex
-                    ? "text-black"
-                    : "text-gray-400 hover:text-white"
-                }`}
-              >
-                {i === activeIndex && (
-                  <motion.span
-                    layoutId="tab-indicator"
-                    className="absolute inset-0 rounded-full bg-white"
-                    transition={{ type: "spring", stiffness: 400, damping: 35 }}
-                  />
-                )}
-                <span className="relative">{service.label}</span>
-              </button>
-            ))}
-          </div>
-        </motion.div>
+          <motion.h2
+            variants={itemVariants}
+            className={`${barlow.className} text-5xl font-extrabold uppercase leading-none text-white sm:text-6xl`}
+          >
+            {title}
+          </motion.h2>
 
-        {/* Tab content */}
-        <AnimatePresence mode="wait">
           <motion.div
-            key={active.key}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="grid items-center gap-10 md:grid-cols-2"
-          >
-            {/* Image */}
-            <div className="relative aspect-[4/3] overflow-hidden rounded-xl">
-              <Image
-                src={active.image}
-                alt={active.title}
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, 50vw"
-                priority={activeIndex === 0}
-              />
-            </div>
+            variants={itemVariants}
+            className="h-px w-16 bg-white/30"
+          />
 
-            {/* Text */}
-            <div className="flex flex-col gap-6">
-              <h3 className="text-3xl font-bold text-white sm:text-4xl">
-                {active.title}
-              </h3>
-              <p className="text-lg leading-relaxed text-gray-300">
-                {active.description}
-              </p>
-              <div>
-                <Link
-                  href={active.href}
-                  className="inline-flex items-center gap-2 rounded-full border border-white px-7 py-3 text-sm font-semibold text-white transition-colors duration-200 hover:bg-white hover:text-black"
-                >
-                  Explore
-                  <span aria-hidden="true">→</span>
-                </Link>
-              </div>
-            </div>
+          <motion.p
+            variants={itemVariants}
+            className="text-lg leading-relaxed text-gray-300"
+          >
+            {description}
+          </motion.p>
+
+          <motion.div variants={itemVariants}>
+            <Link
+              href={href}
+              className="inline-flex items-center gap-2 rounded-full border border-white px-7 py-3 text-sm font-semibold text-white transition-colors duration-200 hover:bg-white hover:text-black"
+            >
+              Explore
+              <span aria-hidden="true">→</span>
+            </Link>
           </motion.div>
-        </AnimatePresence>
+        </motion.div>
       </div>
     </section>
+  );
+}
+
+export default function ServiceShowcase() {
+  return (
+    <>
+      {SERVICES.map(({ key, ...rest }) => (
+        <ServiceSection key={key} {...rest} />
+      ))}
+    </>
   );
 }

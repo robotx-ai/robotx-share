@@ -42,44 +42,6 @@ const SERVICES = [
     guestCount: 500,
   },
 
-  // Cleaning
-  {
-    title: "AutoSweep Pro Floor Scrubber",
-    description:
-      "Autonomous floor scrubbing robot covering up to 10,000 sq ft per shift. LIDAR-guided navigation with real-time obstacle avoidance for retail, office, and hospitality environments.",
-    imageSrc: "/Warehouse.png",
-    category: "Cleaning",
-    price: 180,
-    locationValue: "Los Angeles, CA",
-    roomCount: 1,
-    bathroomCount: 1,
-    guestCount: 50,
-  },
-  {
-    title: "DustBot UV Sanitization Unit",
-    description:
-      "UV-C disinfection robot validated for hospital, clinic, and high-traffic commercial use. Follows programmable room schedules and logs sanitization compliance reports.",
-    imageSrc: "/Warehouse.png",
-    category: "Cleaning",
-    price: 250,
-    locationValue: "Long Beach, CA",
-    roomCount: 1,
-    bathroomCount: 2,
-    guestCount: 30,
-  },
-  {
-    title: "SprayTech Industrial Pressure Washer",
-    description:
-      "Heavy-duty robotic pressure washing system for industrial floors, parking structures, and loading docks. Handles chemical-resistant surfaces and grease-heavy environments.",
-    imageSrc: "/Warehouse.png",
-    category: "Cleaning",
-    price: 320,
-    locationValue: "Anaheim, CA",
-    roomCount: 2,
-    bathroomCount: 1,
-    guestCount: 20,
-  },
-
   // Warehouse
   {
     title: "CarryBot Heavy Pallet Mover",

@@ -28,7 +28,6 @@ Follow this sequence unless the user requests a narrower scope.
 ### 2. Update taxonomy sources
 - Canonical categories are fixed to:
   - `Showcase & Performance`
-  - `Cleaning`
   - `Warehouse`
   - `Restaurant`
 - Update category constants/UI filters first.

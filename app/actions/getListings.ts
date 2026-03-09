@@ -93,6 +93,14 @@ export default async function getListings(params: IListingsParams) {
       createdAt: list.createdAt.toISOString(),
     }));
 
+    if (!category) {
+      safeListings.sort((a, b) => {
+        const aIsShowcase = a.category === "Showcase & Performance" ? 0 : 1;
+        const bIsShowcase = b.category === "Showcase & Performance" ? 0 : 1;
+        return aIsShowcase - bIsShowcase;
+      });
+    }
+
     return safeListings;
   } catch (error: any) {
     throw new Error(error.message);

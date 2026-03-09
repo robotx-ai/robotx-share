@@ -7,7 +7,6 @@
 
 ## Canonical Service Categories
 - `Showcase & Performance` (`showcase-performance`)
-- `Cleaning` (`cleaning`)
 - `Warehouse` (`warehouse`)
 - `Restaurant` (`restaurant`)
 

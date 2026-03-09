@@ -29,7 +29,6 @@ function Footer({}: Props) {
     [
       "Services",
       "Showcase & Performance",
-      "Cleaning",
       "Warehouse",
       "Restaurant",
       "Deployment guides",

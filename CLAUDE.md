@@ -62,7 +62,6 @@ Internal variable names and route paths may keep legacy names during MVP for com
 ## Service Categories (Canonical — Do Not Add More Without Explicit Request)
 
 - `Showcase & Performance` (slug: `showcase-performance`)
-- `Cleaning` (slug: `cleaning`)
 - `Warehouse` (slug: `warehouse`)
 - `Restaurant` (slug: `restaurant`)
 
