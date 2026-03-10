@@ -93,10 +93,39 @@ Copy `.env.example` to `.env` and fill in values. Key vars:
 - `DATABASE_URL` — Supabase Postgres connection string
 - `ROBOTX_ADMIN_EMAILS` — comma-separated admin email allowlist
 - `NEXTAUTH_SECRET`, `NEXTAUTH_URL` — NextAuth config
-- `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` — image uploads
+- `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` — Cloudinary cloud name (used for image and video delivery)
+- `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` — Cloudinary server-side credentials for uploads
+- `CLOUDINARY_URL` — shorthand `cloudinary://<key>:<secret>@<cloud>` (alternative to key/secret pair)
 - `SUPABASE_*` — for Supabase CLI operations and migration scripts
 - `MONGODB_MIGRATION_URI`, `MONGODB_MIGRATION_DB` — one-time migration source (legacy)
 - `DB_MIGRATION_READ_ONLY` — set to `"true"` during cutover to block writes
+
+## Cloudinary Video Management
+
+Cloudinary (cloud name `dmrhtzqyx`) is used for both image uploads and video asset hosting. Video files must **never** be committed to git — `public/videos/*.mp4|.mov|.webm` is gitignored.
+
+**To upload a video programmatically** (credentials are in `.env`):
+```bash
+curl -X POST \
+  -F "file=@public/videos/<file>.mp4" \
+  -F "public_id=<asset-name>" \
+  -F "resource_type=video" \
+  -F "overwrite=true" \
+  -u "$CLOUDINARY_API_KEY:$CLOUDINARY_API_SECRET" \
+  "https://api.cloudinary.com/v1_1/$NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME/video/upload"
+```
+
+**Delivery URL pattern:**
+```
+https://res.cloudinary.com/dmrhtzqyx/video/upload/q_auto,f_auto/<public_id>.mp4
+```
+- `q_auto` — auto quality per device/network
+- `f_auto` — serves WebM to Chrome, mp4 elsewhere
+
+**Current video assets:**
+| public_id | Component | Notes |
+|---|---|---|
+| `showcase-bg` | `components/ServiceShowcase.tsx` | Unitree G1 demo, 25s loop, 1080p |
 
 ## RobotX Rebrand Migration Skill
 

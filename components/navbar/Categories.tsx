@@ -43,7 +43,7 @@ function Categories({}: Props) {
 
   return (
     <Container>
-      <div className="pt-4 flex flex-row items-center justify-between overflow-x-auto">
+      <div className="pt-3 pb-1 flex flex-row items-center justify-center gap-3 overflow-x-auto">
         {categories.map((items) => (
           <CategoryBox
             key={items.label}

@@ -36,10 +36,12 @@ function Navbar({ currentUser, isAdmin = false }: Props) {
     >
       <div className={`py-4 transition-all duration-300 ${scrolled ? "border-b-[1px]" : ""}`}>
         <Container>
-          <div className="flex flex-row items-center justify-between gap-3 md:gap-0">
+          <div className="grid grid-cols-3 items-center gap-3">
             <Logo transparent={transparent} />
-            <Search transparent={transparent} />
-            <div className="flex items-center gap-3">
+            <div className="flex justify-center">
+              <Search transparent={transparent} />
+            </div>
+            <div className="flex items-center gap-3 justify-end">
               <a
                 href="https://robotxshop.com"
                 target="_blank"

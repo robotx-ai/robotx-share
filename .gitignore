@@ -1,5 +1,10 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+# Large video assets (host on Cloudinary instead)
+/public/videos/*.mp4
+/public/videos/*.mov
+/public/videos/*.webm
+
 # dependencies
 /node_modules
 /.pnp
@@ -47,3 +52,6 @@ next-env.d.ts
 # .netlify/edge-functions-dist/
 .netlify/
 deno.lock
+
+# Claude Agent
+/.superpowers/
