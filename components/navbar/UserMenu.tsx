@@ -16,9 +16,10 @@ import MenuItem from "./MenuItem";
 type Props = {
   currentUser?: SafeUser | null;
   isAdmin?: boolean;
+  transparent?: boolean;
 };
 
-function UserMenu({ currentUser, isAdmin = false }: Props) {
+function UserMenu({ currentUser, isAdmin = false, transparent = false }: Props) {
   const router = useRouter();
   const registerModel = useRegisterModal();
   const loginModel = useLoginModel();
@@ -46,7 +47,9 @@ function UserMenu({ currentUser, isAdmin = false }: Props) {
       <div className="flex flex-row items-center gap-3">
         {isAdmin && (
           <div
-            className="hidden md:block text-sm font-semibold py-3 px-4 rounded-full hover:bg-neutral-100 transition cursor-pointer"
+            className={`hidden md:block text-sm font-semibold py-3 px-4 rounded-full transition cursor-pointer ${
+              transparent ? "text-white hover:bg-white/10" : "hover:bg-neutral-100"
+            }`}
             onClick={onRent}
           >
             List a Service
@@ -54,7 +57,9 @@ function UserMenu({ currentUser, isAdmin = false }: Props) {
         )}
         <div
           onClick={toggleOpen}
-          className="p-4 md:py-1 md:px-2 border-[1px] flex flex-row items-center gap-3 rounded-full cursor-pointer hover:shadow-md transition"
+          className={`p-4 md:py-1 md:px-2 border-[1px] flex flex-row items-center gap-3 rounded-full cursor-pointer hover:shadow-md transition ${
+            transparent ? "border-white/60 text-white" : ""
+          }`}
         >
           <AiOutlineMenu />
           <div className="hidden md:block">

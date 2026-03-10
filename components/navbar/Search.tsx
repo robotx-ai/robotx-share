@@ -10,9 +10,11 @@ import { useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 import { BiSearch } from "react-icons/bi";
 
-type Props = {};
+type Props = {
+  transparent?: boolean;
+};
 
-function Search({}: Props) {
+function Search({ transparent = false }: Props) {
   const searchModel = useSearchModal();
   const params = useSearchParams();
 
@@ -50,15 +52,21 @@ function Search({}: Props) {
   return (
     <div
       onClick={searchModel.onOpen}
-      className="border-[1px] w-full md:w-auto py-2 rounded-full shadow-sm hover:shadow-md transition cursor-pointer"
+      className={`border-[1px] w-full md:w-auto py-2 rounded-full transition cursor-pointer ${
+        transparent
+          ? "border-white/60 hover:border-white"
+          : "shadow-sm hover:shadow-md border-neutral-200"
+      }`}
     >
       <div className="flex flex-row items-center justify-between">
-        <div className="text-sm font-semibold px-6">{locationLabel}</div>
-        <div className="hidden sm:block text-losm font-semibold px-6 border-x-[1px] flex-1 text-center">
+        <div className={`text-sm font-semibold px-6 ${transparent ? "text-white" : ""}`}>
+          {locationLabel}
+        </div>
+        <div className={`hidden sm:block text-losm font-semibold px-6 border-x-[1px] flex-1 text-center ${transparent ? "border-white/40 text-white" : ""}`}>
           {durationLabel}
         </div>
-        <div className="text-sm px-2 text-gray-600 flex flex-row items-center">
-          <div className="rounded-full bg-black p-2 text-white">
+        <div className="text-sm px-2 flex flex-row items-center">
+          <div className={`rounded-full p-2 ${transparent ? "bg-white text-black" : "bg-black text-white"}`}>
             <BiSearch size={18} />
           </div>
         </div>

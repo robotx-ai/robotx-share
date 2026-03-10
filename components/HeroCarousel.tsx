@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { Barlow_Condensed } from "next/font/google";
@@ -13,51 +13,63 @@ const barlow = Barlow_Condensed({
 });
 
 const slides = [
-  { image: "/Showcase.png", label: "Performance Services" },
-  { image: "/Restaurant.png", label: "Restaurant Services" },
-  { image: "/Warehouse_Delivery.png", label: "Warehouse Services" },
+  { videoSrc: "https://res.cloudinary.com/dmrhtzqyx/video/upload/q_auto,f_auto/hero-showcase.mp4", label: "Performance Services" },
+  { videoSrc: "https://res.cloudinary.com/dmrhtzqyx/video/upload/q_auto,f_auto/hero-restaurant.mp4", label: "Restaurant Services" },
+  { videoSrc: "https://res.cloudinary.com/dmrhtzqyx/video/upload/q_auto,f_auto/hero-warehouse.mp4", label: "Warehouse Services" },
 ];
 
 export default function HeroCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
   const advance = useCallback(() => {
     setCurrentIndex((i) => (i + 1) % slides.length);
   }, []);
 
-  // Auto-advance every 10s; restarted whenever currentIndex changes (resets on manual nav too)
-  useEffect(() => {
-    const timer = setInterval(advance, 10_000);
-    return () => clearInterval(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentIndex]);
-
   const goTo = (index: number) => {
     if (index !== currentIndex) setCurrentIndex(index);
   };
 
+  // When slide changes: reset & play the active video, pause & reset others
+  useEffect(() => {
+    slides.forEach((_, i) => {
+      const video = videoRefs.current[i];
+      if (!video) return;
+      if (i === currentIndex) {
+        video.currentTime = 0;
+        video.play().catch(() => {});
+      } else {
+        video.pause();
+        video.currentTime = 0;
+      }
+    });
+  }, [currentIndex]);
+
   return (
     <section className="relative -mt-28 min-h-[calc(100vh-112px)] overflow-hidden pt-28">
-      {/* Background images — crossfade */}
-      <AnimatePresence>
-        <motion.div
-          key={currentIndex}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+      {/* Background videos — always mounted, crossfade with opacity */}
+      {slides.map((slide, i) => (
+        <motion.video
+          key={slide.videoSrc}
+          ref={(el) => { videoRefs.current[i] = el; }}
+          muted
+          playsInline
+          onEnded={() => { if (i === currentIndex) advance(); }}
+          animate={{ opacity: i === currentIndex ? 1 : 0 }}
           transition={{ duration: 1, ease: "easeInOut" }}
-          className="absolute inset-0 bg-cover bg-top bg-no-repeat"
-          style={{ backgroundImage: `url('${slides[currentIndex].image}')` }}
-        />
-      </AnimatePresence>
+          className="absolute inset-0 h-full w-full object-cover object-top"
+        >
+          <source src={slide.videoSrc} type="video/mp4" />
+        </motion.video>
+      ))}
 
-      {/* Subtle left-side gradient for text legibility without obscuring the right-side imagery */}
-      <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
+      {/* Gradient for text legibility */}
+      <div className="absolute inset-0 bg-black/50" />
 
-      {/* Content — anchored to left 50% */}
-      <div className="relative z-10 flex min-h-[calc(100vh-112px)] items-center">
-        <div className="mx-auto w-full max-w-6xl px-6 py-16 sm:px-10 lg:px-12">
-          <div className="flex w-full sm:w-1/2 flex-col gap-8">
+      {/* Content — centered */}
+      <div className="relative z-10 flex min-h-[calc(100vh-112px)] items-center justify-center">
+        <div className="mx-auto w-full max-w-4xl px-6 py-16 sm:px-10 lg:px-12">
+          <div className="flex flex-col items-center gap-8 text-center">
             {/* Headline */}
             <h1
               className={`${barlow.className} text-[2.75rem] font-extrabold uppercase leading-none tracking-tight text-white sm:text-6xl lg:text-7xl`}
@@ -84,16 +96,14 @@ export default function HeroCarousel() {
             </h1>
 
             {/* CTA */}
-            <div>
-              <Link
-                href="/services"
-                className="inline-flex items-center justify-center rounded-full bg-white px-8 py-4 text-base font-semibold text-black transition hover:bg-neutral-200"
-              >
-                Explore Services
-              </Link>
-            </div>
+            <Link
+              href="/services"
+              className="inline-flex items-center justify-center rounded-full bg-white px-8 py-4 text-base font-semibold text-black transition hover:bg-neutral-200"
+            >
+              Explore Services
+            </Link>
 
-            {/* Slide indicators — thin rectangles (industrial feel) */}
+            {/* Slide indicators */}
             <div className="flex items-center gap-2">
               {slides.map((_, i) => (
                 <button
