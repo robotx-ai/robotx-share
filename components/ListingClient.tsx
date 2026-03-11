@@ -10,9 +10,12 @@ import { Range } from "react-date-range";
 import { toast } from "react-toastify";
 
 import Container from "./Container";
+import ListingCTA from "./listing/ListingCTA";
+import ListingFeatureCards from "./listing/ListingFeatureCards";
 import ListingHead from "./listing/ListingHead";
 import ListingInfo from "./listing/ListingInfo";
 import ListingReservation from "./listing/ListingReservation";
+import { TIERS } from "./listing/ServiceTierSelector";
 import { categories } from "./navbar/Categories";
 
 const initialDateRange = {
@@ -51,6 +54,8 @@ function ListingClient({ reservations = [], listing, currentUser }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [totalPrice, setTotalPrice] = useState(listing.price);
   const [dateRange, setDateRange] = useState<Range>(initialDateRange);
+  const [selectedTierId, setSelectedTierId] = useState<string>("silver");
+  const [robotCount, setRobotCount] = useState<number>(1);
 
   const onCreateReservation = useCallback(() => {
     if (!currentUser) {
@@ -80,6 +85,9 @@ function ListingClient({ reservations = [], listing, currentUser }: Props) {
   }, [totalPrice, dateRange, listing?.id, router, currentUser, loginModal]);
 
   useEffect(() => {
+    const tier = TIERS.find((t) => t.id === selectedTierId);
+    const multiplier = tier?.multiplier ?? 1;
+
     if (dateRange.startDate && dateRange.endDate) {
       const dayCount = differenceInCalendarDays(
         dateRange.endDate,
@@ -87,12 +95,12 @@ function ListingClient({ reservations = [], listing, currentUser }: Props) {
       );
 
       if (dayCount && listing.price) {
-        setTotalPrice(dayCount * listing.price);
+        setTotalPrice(dayCount * listing.price * multiplier * robotCount);
       } else {
-        setTotalPrice(listing.price);
+        setTotalPrice(listing.price * multiplier * robotCount);
       }
     }
-  }, [dateRange, listing.price]);
+  }, [dateRange, listing.price, selectedTierId, robotCount]);
 
   const category = useMemo(() => {
     return categories.find((item) => item.label === listing.category);
@@ -110,6 +118,9 @@ function ListingClient({ reservations = [], listing, currentUser }: Props) {
             id={listing.id}
             currentUser={currentUser}
           />
+          {listing.category && (
+            <ListingFeatureCards category={listing.category} />
+          )}
           <div className="grid grid-cols-1 md:grid-cols-7 md:gap-10 mt-6">
             <ListingInfo
               user={listing.user}
@@ -129,9 +140,14 @@ function ListingClient({ reservations = [], listing, currentUser }: Props) {
                 onSubmit={onCreateReservation}
                 disabled={isLoading}
                 disabledDates={disableDates}
+                selectedTierId={selectedTierId}
+                onTierChange={setSelectedTierId}
+                robotCount={robotCount}
+                onRobotCountChange={setRobotCount}
               />
             </div>
           </div>
+          <ListingCTA />
         </div>
       </div>
     </Container>
