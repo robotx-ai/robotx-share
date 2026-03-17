@@ -18,28 +18,16 @@ npm run lint         # ESLint check (must pass before any PR/merge)
 
 ## Deployment
 
-This repo deploys to **two separate Netlify sites** from a single codebase. Each site uses its own Supabase database via Netlify environment variables.
-
-| Site | Domain | Supabase Project |
-|------|--------|-----------------|
-| robotx-share | robotxshare.com | `ncqmdyjchvmksxprgiut` |
-| botshare | botsharing.us | `jylxrvwxsjehthsqswib` |
+This repo deploys to **robotxshare.com** (Netlify site `288834e5`, Supabase project `ncqmdyjchvmksxprgiut`).
 
 ```bash
-# Preview deploys (safe — no live site impact)
-npm run deploy:robotx         # robotx-share preview
-npm run deploy:botshare       # botshare preview
-npm run deploy:all            # both preview
-
-# Production deploys
-npm run deploy:robotx:prod    # robotx-share live
-npm run deploy:botshare:prod  # botshare live
-npm run deploy:all:prod       # both live
+npm run deploy:preview   # Preview deploy (safe — no live site impact)
+npm run deploy:prod      # Production deploy
 ```
 
-**Default:** always deploy preview first; use `:prod` only when verified.
+**Default:** always deploy preview first; use `deploy:prod` only when verified.
 
-Each Netlify site manages its own env vars (DATABASE_URL, SUPABASE_*, NEXTAUTH_URL, etc.) in the Netlify dashboard. The `.env` file is for local dev only.
+Netlify manages env vars (DATABASE_URL, SUPABASE_*, NEXTAUTH_URL, etc.) in the site dashboard. The `.env` file is for local dev only.
 
 ## Architecture
 
