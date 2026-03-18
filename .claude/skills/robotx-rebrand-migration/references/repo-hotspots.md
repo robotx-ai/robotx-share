@@ -44,4 +44,4 @@ Prioritize these files for RobotX migration tasks.
 ## Supabase operations context
 - `/Users/jasonliu/Github/robotx-share/.env.example`
   - Template for local dev env vars. Production env vars live in Netlify dashboard per site.
-- See `references/supabase-operations.md` for multi-project setup (robotx-share + botshare).
+- See `references/supabase-operations.md` for Supabase project config.
